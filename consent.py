@@ -1,24 +1,24 @@
-from dominate.tags import div, p, span, h1, strong, ul, li, em
+from dominate import tags
 
 from psynet.consent import NoConsent
 from psynet.modular_page import ModularPage, CheckboxControl
 from psynet.page import InfoPage
 from psynet.timeline import Module, join
 
-information_sheet = div()
+information_sheet = tags.div()
 
 with information_sheet:
-    h1("Information sheet")
-    p(
+    tags.h1("Information sheet")
+    tags.p(
         """
-        Before you decide to take part in this study it is important for you to understand why the research is being done
-        and what it will involve. Please take time to read the following information carefully and discuss it with
+        Before you decide to take part in this study it is important for you to understand why the research is being 
+        done and what it will involve. Please take time to read the following information carefully and discuss it with
         others if you wish.
         """
     )
-    with p():
-        strong("Purpose of the study.")
-        span(
+    with tags.p():
+        tags.strong("Purpose of the study.")
+        tags.span(
             """
             Anyone who has ever watched a group of people create music together knows that it often involves a great 
             deal of coordination and communication between the performers. As music psychologists, we want to 
@@ -27,18 +27,18 @@ with information_sheet:
             """
         )
 
-    with p():
-        strong("Do I have to take part?")
-        span(
+    with tags.p():
+        tags.strong("Do I have to take part?")
+        tags.span(
             """
             Taking part is entirely voluntary. Refusal or withdrawal will involve no penalty or loss, now or in the
             future.
             """
         )
 
-    with p():
-        strong("How long does the experiment last?")
-        span(
+    with tags.p():
+        tags.strong("How long does the experiment last?")
+        tags.span(
             """
             The full experiment should last approximately 15 minutes, though individual times will vary, and your
             experiment may end early depending on various factors.
@@ -47,26 +47,26 @@ with information_sheet:
 
 
 # with pages[1]:
-    with p():
-        strong("Benefits of taking part.")
-        span(
+    with tags.p():
+        tags.strong("Benefits of taking part.")
+        tags.span(
             """
             Completing the entire experiment earns you a payment of approximately £2.50. This fee is calculated by
             multiplying a notional hourly rate of £10.00/hour by the estimated duration of the experiment. However,
             please note the following:
             """
         )
-        with ul():
-            li(
+        with tags.ul():
+            tags.li(
                 """
                 Taking the experiment more slowly does not earn you a greater total payment. The total payment is fixed
                 according to the 
                 """,
-                em("estimated"),
+                tags.em("estimated"),
                 " duration of the experiment",
             )
 
-            li(
+            tags.li(
                 """
                 Your experiment could end early for a number of reasons, including but not limited to technical failure
                 and task performance. In this case you will be compensated pro rata for the portion of the experiment
@@ -74,26 +74,26 @@ with information_sheet:
                 """
             )
 
-    with p():
-        strong("What is the procedure?")
-        span(
+    with tags.p():
+        tags.strong("What is the procedure?")
+        tags.span(
             """
             The experiment takes place in your web browser. You will be asked to perform simple tasks using your
             keyboard or mouse while listening to sounds and watching videos.
             """
         )
 
-    with p():
-        strong("Risks of taking part.")
-        span(
+    with tags.p():
+        tags.strong("Risks of taking part.")
+        tags.span(
             """
             There are no risks involved beyond those associated with normal computer use.
             """
         )
 
-    with p():
-        strong("Confidentiality.")
-        span(
+    with tags.p():
+        tags.strong("Confidentiality.")
+        tags.span(
             """
             No personal details (e.g. name, contact data) will be collected at any stage, so your data will be anonymous
             throughout. This anonymous data may eventually be shared in public data repositories, conferences, and
@@ -101,31 +101,37 @@ with information_sheet:
             """
         )
 
-    with p():
-        strong("Ethical review.")
-        span(
+    with tags.p():
+        tags.strong("Ethical review.")
+        tags.span(
             """
             The project has been approved by the University of Cambridge Faculty of Music Ethics Committee.
             """
         )
 
-    with p():
-        strong("Contact for further information.")
-        span(
+    with tags.p():
+        tags.strong("Contact for further information.")
+        tags.span(
             """
             If you have further queries about this experiment, please contact Huw Cheston at hwc31@cam.ac.uk.
             """
         )
 
 
-consent_form = div()
+consent_form = tags.div()
 
 with consent_form:
-    h1("Consent form")
+    tags.h1("Consent form")
 
-    p(em("Please read the following text and select ‘Agree’ if you consent to these terms."))
+    tags.p(
+        tags.em(
+            """
+            Please read the following text and select ‘Agree’ if you consent to these terms.
+            """
+        )
+    )
 
-    p(
+    tags.p(
         """
         I have been informed about the procedures to be used in this experiment and the tasks I need to perform, and I
         have agreed to take part. I understand that taking part in this experiment is voluntary and I can withdraw from
@@ -133,7 +139,7 @@ with consent_form:
         """
     )
 
-    p(
+    tags.p(
         """
         I understand that the data collected in this testing session will be stored on electronic media or on paper and
         it may contribute to scientific publications and presentations. I agree that the data can be made available

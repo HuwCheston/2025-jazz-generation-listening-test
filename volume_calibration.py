@@ -24,7 +24,9 @@ def volume_calibration(min_time=2.5, time_estimate=5.0):
             """
         )
 
-    audio = "https://drive.google.com/uc?export=download&id=1HvLylzYHYNJAGmvRmAPhBM-gA2DhbbWZ"
+    # TODO: replace this sample audio with our actual output.mp3 file
+    audio = "https://ia803105.us.archive.org/10/items/cd_portrait-in-jazz_bill-evans-trio_0/disc1/" \
+            "07.%20Bill%20Evans%20Trio%20-%20What%20Is%20This%20Thing%20Called%20Love__sample.mp3"
 
     return ModularPage(
         "volume_calibration",
