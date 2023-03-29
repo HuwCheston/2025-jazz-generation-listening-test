@@ -1,6 +1,6 @@
 [Config]
-title = Musical scales experiment (headphones required, Chrome browser, 15 minutes)
-description = This is a music listening experiment, but no musical expertise is required to take part. You will listen to different melodies, and you will be asked to rate them. We use a dynamic payment scheme which means you get paid in proportion to how far you make it through the experiment.
+title = Music listening experiment (headphones required, Chrome browser, 15 minutes)
+description = This is a music listening experiment, but no musical expertise is required to take part. You will listen to and watch different musical performances, and you will be asked to rate them. We use a dynamic payment scheme which means you get paid in proportion to how far you make it through the experiment.
 
 [Prolific]
 recruiter = prolific

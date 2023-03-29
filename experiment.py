@@ -190,7 +190,7 @@ class ScalesTrialMaker(StaticTrialMaker):
 
 
 class Exp(psynet.experiment.Experiment):
-    label = "Musical scales experiment"
+    label = "Networked performance success experiment"
 
     variables = {
         "currency": "£",
@@ -203,12 +203,23 @@ class Exp(psynet.experiment.Experiment):
         consent,
         InfoPage(
             tags.div(
-                tags.p("This experiment requires you to wear headphones. Please ensure you have plugged yours in now."),
-                tags.p("The next page will play some test audio. Please turn down your volume before proceeding.")
+
+                tags.p(
+                    """
+                    This experiment requires you to be sitting in a quiet environment where you can clearly see your 
+                    computer screen. This experiment also requires you to wear headphones. Please ensure you have 
+                    plugged yours in now.
+                    """
+                ),
+                tags.p(
+                    """
+                    The next page will play some test audio. Please turn down your volume before proceeding.
+                    """
+                )
             ),
             time_estimate=5,
         ),
-        volume_calibration(mean_pitch=67, sd_pitch=5, timbre=TIMBRE),
+        volume_calibration(),
         InfoPage(
             """
             We will now perform a short listening test to verify that your audio is working properly.

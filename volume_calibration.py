@@ -1,13 +1,13 @@
+import os
 import random
 
 from dominate import tags
 
-from psynet.js_synth import JSSynth, Note
-from psynet.modular_page import ModularPage
-from psynet.timeline import Event, Module
+from psynet.modular_page import ModularPage, AudioPrompt
+from psynet.timeline import CodeBlock, PageMaker, join, Event, Module
 
 
-def volume_calibration(mean_pitch, sd_pitch, timbre, time_estimate=5, min_time=2.5):
+def volume_calibration(min_time=2.5, time_estimate=5.0):
     text = tags.div()
     with text:
         tags.p(
@@ -24,24 +24,11 @@ def volume_calibration(mean_pitch, sd_pitch, timbre, time_estimate=5, min_time=2
             """
         )
 
-    n_notes = int(1e4)
-    notes = [
-        Note(random.normalvariate(mu=mean_pitch, sigma=sd_pitch))
-        for _ in range(n_notes)
-    ]
+    audio = "https://drive.google.com/uc?export=download&id=1HvLylzYHYNJAGmvRmAPhBM-gA2DhbbWZ"
 
-    return Module(
+    return ModularPage(
         "volume_calibration",
-        ModularPage(
-            "volume_calibration",
-            JSSynth(
-                text,
-                notes,
-                timbre=timbre,
-            ),
-            events={
-                "submitEnable": Event(is_triggered_by="trialStart", delay=min_time)
-            },
-            time_estimate=time_estimate,
-        )
+        AudioPrompt(audio, text, loop=True),
+        events={"submitEnable": Event(is_triggered_by="trialStart", delay=min_time)},
+        time_estimate=time_estimate,
     )

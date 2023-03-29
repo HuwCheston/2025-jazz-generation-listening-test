@@ -20,9 +20,10 @@ with information_sheet:
         strong("Purpose of the study.")
         span(
             """
-            Music is a complex yet fascinating phenomenon that appears in all known cultures. As music psychologists, we
-            want to understand the mental processes that underpin music listening and music creation. In this particular
-            experiment, we are studying how melodies can elicit different emotions.
+            Anyone who has ever watched a group of people create music together knows that it often involves a great 
+            deal of coordination and communication between the performers. As music psychologists, we want to 
+            understand the strategies that underpin successful musical interaction. In this particular experiment, we 
+            are studying how musicians can successfully perform together over the internet.
             """
         )
 
@@ -39,7 +40,7 @@ with information_sheet:
         strong("How long does the experiment last?")
         span(
             """
-            The full experiment should last approximately 20 minutes, though individual times will vary, and your
+            The full experiment should last approximately 15 minutes, though individual times will vary, and your
             experiment may end early depending on various factors.
             """
         )
@@ -50,7 +51,7 @@ with information_sheet:
         strong("Benefits of taking part.")
         span(
             """
-            Completing the entire experiment earns you a payment of approximately £3.00. This fee is calculated by
+            Completing the entire experiment earns you a payment of approximately £2.50. This fee is calculated by
             multiplying a notional hourly rate of £10.00/hour by the estimated duration of the experiment. However,
             please note the following:
             """
@@ -75,16 +76,16 @@ with information_sheet:
 
     with p():
         strong("What is the procedure?")
-        p(
+        span(
             """
             The experiment takes place in your web browser. You will be asked to perform simple tasks using your
-            keyboard or mouse while listening to sounds.
+            keyboard or mouse while listening to sounds and watching videos.
             """
         )
 
     with p():
         strong("Risks of taking part.")
-        p(
+        span(
             """
             There are no risks involved beyond those associated with normal computer use.
             """
@@ -92,7 +93,7 @@ with information_sheet:
 
     with p():
         strong("Confidentiality.")
-        p(
+        span(
             """
             No personal details (e.g. name, contact data) will be collected at any stage, so your data will be anonymous
             throughout. This anonymous data may eventually be shared in public data repositories, conferences, and
@@ -102,7 +103,7 @@ with information_sheet:
 
     with p():
         strong("Ethical review.")
-        p(
+        span(
             """
             The project has been approved by the University of Cambridge Faculty of Music Ethics Committee.
             """
@@ -110,9 +111,9 @@ with information_sheet:
 
     with p():
         strong("Contact for further information.")
-        p(
+        span(
             """
-            If you have further queries about this experiment, please contact Claire Anne Brillon at cb2211@cam.ac.uk.
+            If you have further queries about this experiment, please contact Huw Cheston at hwc31@cam.ac.uk.
             """
         )
 
