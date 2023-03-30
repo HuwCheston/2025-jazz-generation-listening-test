@@ -7,13 +7,13 @@ def instructions():
     html = tags.div()
 
     with html:
-        tags.h1("Instructions")
+        tags.h1("Experiment  instructions")
 
         with tags.p():
             tags.strong('Description:')
             tags.span(
                 """
-                In this experiment you will listen to and watch a series of musical performances by different pianists 
+                In this experiment, you will listen to and watch a series of musical performances by different pianists 
                 and drummers. You will see the pianist on the left side of your screen and the drummer on the right. 
                 Both musicians were performing together over the Internet and were improvising, meaning that they 
                 were making the music up on-the-spot.
@@ -32,12 +32,12 @@ def instructions():
             tags.strong('Advice:')
             tags.em(
                 """
-                There are no wright or wrong answers:
+                There are no right or wrong answers:
                 """
             )
             tags.span(
                 """
-                just give us your overall impression of the performance you just heard and try to be consistent 
+                give us your overall impression of the performance you just heard and try to be consistent 
                 with how you answer. 
                 """
             )

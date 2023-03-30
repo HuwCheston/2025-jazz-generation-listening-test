@@ -28,6 +28,15 @@ with information_sheet:
         )
 
     with tags.p():
+        tags.strong("What is the procedure?")
+        tags.span(
+            """
+            The experiment takes place in your web browser. You will be asked to perform simple tasks using your
+            keyboard or mouse while listening to sounds and watching videos.
+            """
+        )
+
+    with tags.p():
         tags.strong("Do I have to take part?")
         tags.span(
             """
@@ -45,8 +54,6 @@ with information_sheet:
             """
         )
 
-
-# with pages[1]:
     with tags.p():
         tags.strong("Benefits of taking part.")
         tags.span(
@@ -73,15 +80,6 @@ with information_sheet:
                 that you completed.
                 """
             )
-
-    with tags.p():
-        tags.strong("What is the procedure?")
-        tags.span(
-            """
-            The experiment takes place in your web browser. You will be asked to perform simple tasks using your
-            keyboard or mouse while listening to sounds and watching videos.
-            """
-        )
 
     with tags.p():
         tags.strong("Risks of taking part.")
@@ -113,9 +111,10 @@ with information_sheet:
         tags.strong("Contact for further information.")
         tags.span(
             """
-            If you have further queries about this experiment, please contact Huw Cheston at hwc31@cam.ac.uk.
+            If you have further queries about this experiment, please contact Huw Cheston at 
             """
         )
+        tags.a('hwc31@cam.ac.uk.', href='mailto:hwc31@cam.ac.uk')
 
 
 consent_form = tags.div()
@@ -148,19 +147,21 @@ with consent_form:
         """
     )
 
-consent = Module(
-    "consent",
-    join(
-        NoConsent(),
-        InfoPage(information_sheet, time_estimate=5),
-        ModularPage(
-            "consent_form",
-            consent_form,
-            CheckboxControl(
-                choices=["I agree"],
-                force_selection=True,
+
+def consent():
+    return Module(
+        "consent",
+        join(
+            NoConsent(),
+            InfoPage(information_sheet, time_estimate=5),
+            ModularPage(
+                "consent_form",
+                consent_form,
+                CheckboxControl(
+                    choices=["I agree"],
+                    force_selection=True,
+                ),
+                time_estimate=10,
             ),
-            time_estimate=10,
-        ),
+        )
     )
-)
