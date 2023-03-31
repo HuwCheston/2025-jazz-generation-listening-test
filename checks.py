@@ -15,25 +15,26 @@ class HearingImpairmentCheck(Module):
     """
 
     def __init__(
-            self,
-            label: str = 'hearing_impairment_check',
-            time_estimate_per_trial: float = 3.0,
+        self,
+        label: str = 'hearing_impairment_check',
+        time_estimate_per_trial: float = 3.0,
     ):
-        text = tags.div()
-        with text:
-            tags.h1('Hearing check')
-            tags.p(
-                """
-                Do you have any kind of hearing impairment? 
-                (I.e., do you have problems with your hearing?
-                """
-            )
 
         self.label = label
         self.elts = join(
             ModularPage(
                 self.label,
-                Prompt(text),
+                Prompt(
+                    tags.div(
+                        tags.h1('Hearing check'),
+                        tags.p(
+                            """
+                            Do you have any kind of hearing impairment? 
+                            (I.e., do you have problems with your hearing?)
+                            """
+                        )
+                    )
+                ),
                 control=PushButtonControl(["Yes", "No"], arrange_vertically=False),
                 time_estimate=time_estimate_per_trial,
             ),
@@ -86,7 +87,7 @@ def experiment_requirements(
     )
 
 
-def headphone_test(
+def headphone_test_intro(
         time_estimate: float = 5
 ) -> InfoPage:
     """
@@ -94,18 +95,17 @@ def headphone_test(
     :param time_estimate:
     :return:
     """
-    intro = tags.div(
-        tags.h1('Headphone check'),
-        tags.p(
-            """
-            We will now perform a short listening test to verify that your audio is working properly.
-            This test will be difficult to pass unless you listen carefully over your headphones.
-            Press 'Next' when you are ready to start.
-            """
-        )
-    )
 
-    return join(
-        InfoPage(intro, time_estimate=time_estimate),
-        HeadphoneTest()
+    return InfoPage(
+        tags.div(
+            tags.h1('Headphone check'),
+            tags.p(
+                """
+                We will now perform a short listening test to verify that your audio is working properly.
+                This test will be difficult to pass unless you listen carefully over your headphones.
+                Press 'Next' when you are ready to start.
+                """
+            )
+        ),
+        time_estimate=time_estimate
     )

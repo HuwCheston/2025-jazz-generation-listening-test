@@ -20,8 +20,8 @@ def debriefing(
         tags.p(
             """
             In this study, we are examining how musical performances can be coordinated successfully over the internet. 
-            We are interested in understanding what happens when performances take place online (whether they slow down or 
-            change tempo, for instance), as well as how successful listeners evaluate these performances to be.
+            We are interested in understanding what happens when performances take place online (whether they slow down 
+            or change tempo, for instance), as well as how successful listeners evaluate these performances to be.
             """
         )
         tags.p(
