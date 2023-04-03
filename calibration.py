@@ -1,9 +1,11 @@
 from dominate import tags
+from typing import Dict, List, Optional, Union
 
 from psynet.asset import CachedAsset, ExternalAsset
 from psynet.page import VolumeCalibration, PageMaker
-from psynet.modular_page import ModularPage, ImagePrompt, AudioPrompt
+from psynet.modular_page import ModularPage, ImagePrompt, AudioPrompt, OptionControl, PushButton, Control
 from psynet.timeline import Event, Module
+from psynet.utils import NoArgumentProvided, linspace
 
 
 class AudioCalibration(VolumeCalibration):
@@ -88,3 +90,130 @@ class BrightnessCalibration(Module):
                 """
             )
         )
+
+
+class CustomSlider(Control):
+    macro = "custom_slider"
+    external_template = "custom-control.html"
+
+    def __init__(
+        self,
+        start_value: float,
+        min_value: float,
+        max_value: float,
+        n_steps: int = 10000,
+        reverse_scale: Optional[bool] = False,
+        directional: Optional[bool] = True,
+        slider_id: Optional[str] = "sliderpage_slider",
+        input_type: Optional[str] = "HTML5_range_slider",
+        random_wrap: Optional[bool] = False,
+        snap_values: Optional[Union[int, list]] = None,
+        minimal_interactions: Optional[int] = 0,
+        minimal_time: Optional[int] = 0,
+        continuous_updates: Optional[bool] = False,
+        template_filename: Optional[str] = None,
+        template_args: Optional[Dict] = None,
+        bot_response=NoArgumentProvided,
+    ):
+        super().__init__(bot_response)
+
+        if snap_values is not None and input_type == "circular_slider":
+            raise ValueError(
+                "Snapping values is currently not supported for circular sliders, set snap_values=None"
+            )
+        if input_type == "circular_slider" and reverse_scale:
+            raise NotImplementedError(
+                "Reverse scale is currently not supported for circular sliders, set reverse_scale=False"
+            )
+
+        self.start_value = start_value
+        self.min_value = min_value
+        self.max_value = max_value
+        self.n_steps = n_steps
+        self.step_size = (max_value - min_value) / (n_steps - 1)
+        self.reverse_scale = reverse_scale
+        self.directional = directional
+        self.slider_id = slider_id
+        self.input_type = input_type
+        self.random_wrap = random_wrap
+        self.template_filename = template_filename
+        self.template_args = template_args
+        self.minimal_time = minimal_time
+
+        self.snap_values = self.format_snap_values(
+            snap_values, min_value, max_value, n_steps
+        )
+
+        js_vars = {}
+        js_vars["snap_values"] = self.snap_values
+        js_vars["minimal_interactions"] = minimal_interactions
+        js_vars["continuous_updates"] = continuous_updates
+        self.js_vars = js_vars
+
+    def format_snap_values(self, snap_values, min_value, max_value, n_steps):
+        if snap_values is None:
+            return snap_values
+            # return linspace(min_value, max_value, n_steps)
+        elif isinstance(snap_values, int):
+            return linspace(min_value, max_value, snap_values)
+        else:
+            for x in snap_values:
+                assert isinstance(x, (float, int))
+                assert x >= min_value
+                assert x <= max_value
+            return sorted(snap_values)
+
+    def validate(self, response, **kwargs):
+        if self.max_value <= self.min_value:
+            raise ValueError("`max_value` must be larger than `min_value`")
+
+        if self.start_value > self.max_value or self.start_value < self.min_value:
+            raise ValueError(
+                "`start_value` (= %f) must be between `min_value` (=%f) and `max_value` (=%f)"
+                % (self.start_value, self.min_value, self.max_value)
+            )
+
+        if self.js_vars["minimal_interactions"] < 0:
+            raise ValueError("`minimal_interactions` cannot be negative!")
+
+    @property
+    def metadata(self):
+        return {
+            "start_value": self.start_value,
+            "min_value": self.min_value,
+            "max_value": self.max_value,
+            "n_steps": self.n_steps,
+            "step_size": self.step_size,
+            "reverse_scale": self.reverse_scale,
+            "directional": self.directional,
+            "slider_id": self.slider_id,
+            "input_type": self.input_type,
+            "random_wrap": self.random_wrap,
+            "template_filename": self.template_filename,
+            "template_args": self.template_args,
+            "js_vars": self.js_vars,
+        }
+
+    def update_events(self, events):
+        events["sliderMinimalTime"] = Event(
+            is_triggered_by="trialStart", delay=self.minimal_time
+        )
+        events["submitEnable"].add_triggers(
+            "sliderMinimalInteractions", "sliderMinimalTime"
+        )
+
+    def get_bot_response(self, experiment, bot, page, prompt):
+        import numpy as np
+
+        equidistant = not isinstance(self.snap_values, list)
+        if equidistant:
+            if self.snap_values:
+                n_candidates = self.snap_values
+            else:
+                n_candidates = self.n_steps
+            candidates = list(
+                np.linspace(self.min_value, self.max_value, num=n_candidates)
+            )
+        else:
+            candidates = self.snap_values
+        return random.sample(candidates, 1)[0]
