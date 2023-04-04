@@ -29,7 +29,7 @@ VOLUME_CALIBRATION_AUDIO = 'static/calibration/output.mp3'
 BRIGHTNESS_CALIBRATION_IMAGE = 'static/calibration/brightness.jpg'
 VIDEOS_DIR = 'static/videos'
 
-VIDEOS = [vid for vid in os.listdir(VIDEOS_DIR) if vid.endswith('.mp4')][:15]    # Just use a few videos for now
+VIDEOS = [vid for vid in os.listdir(VIDEOS_DIR) if vid.endswith('.mp4')]    # Just use a few videos for now
 
 NODES = [
     StaticNode(
@@ -53,9 +53,6 @@ class SuccessTrial(StaticTrial):
     def get_text(self):
         text = [
             tags.h1("How successful was the performance?"),
-            tags.p(
-                tags.em("(1: extremely unsuccessful, 5: neither successful nor unsuccessful, 9: extremely successful)")
-            )
         ]
         if DEBUG__:
             text.append(tags.p(
@@ -85,7 +82,9 @@ class SuccessTrial(StaticTrial):
                 max_value=9,
                 n_steps=9,
                 snap_values=9,
-                directional=False
+                directional=False,
+                include_labels=True,
+                label_step=1
             ),
             events={
                 "responseEnable": Event(is_triggered_by="promptStart"),

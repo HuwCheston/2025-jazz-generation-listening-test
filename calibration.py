@@ -102,6 +102,8 @@ class CustomSlider(Control):
         min_value: float,
         max_value: float,
         n_steps: int = 10000,
+        include_labels: Optional[bool] = True,
+        label_step: Optional[int] = 1,
         reverse_scale: Optional[bool] = False,
         directional: Optional[bool] = True,
         slider_id: Optional[str] = "sliderpage_slider",
@@ -117,6 +119,11 @@ class CustomSlider(Control):
     ):
         super().__init__(bot_response)
 
+        # if include_labels is not False and (max_value - min_value) % (label_step - 1) != 0:
+        #     raise ValueError(
+        #         "Slider label step must XXXXX"
+        #     )
+
         if snap_values is not None and input_type == "circular_slider":
             raise ValueError(
                 "Snapping values is currently not supported for circular sliders, set snap_values=None"
@@ -129,6 +136,8 @@ class CustomSlider(Control):
         self.start_value = start_value
         self.min_value = min_value
         self.max_value = max_value
+        self.include_labels = include_labels
+        self.label_step = label_step
         self.n_steps = n_steps
         self.step_size = (max_value - min_value) / (n_steps - 1)
         self.reverse_scale = reverse_scale
@@ -182,6 +191,8 @@ class CustomSlider(Control):
             "start_value": self.start_value,
             "min_value": self.min_value,
             "max_value": self.max_value,
+            "include_labels": self.include_labels,
+            "label_step": self.label_step,
             "n_steps": self.n_steps,
             "step_size": self.step_size,
             "reverse_scale": self.reverse_scale,
