@@ -22,7 +22,7 @@ from .checks import headphone_test_intro, HearingImpairmentCheck, experiment_req
 
 logger = get_logger()
 
-DEBUG__ = True
+DEBUG__ = False
 TRIALS_PER_PARTICIPANT = 3 if DEBUG__ else 15
 
 VOLUME_CALIBRATION_AUDIO = 'static/calibration/output.mp3'
@@ -93,7 +93,7 @@ class SuccessTrial(StaticTrial):
         )
 
 
-class ScalesTrialMaker(StaticTrialMaker):
+class SuccessTrialMaker(StaticTrialMaker):
     give_end_feedback_passed = False
 
     def compute_bonus(self, score, passed):
@@ -118,7 +118,7 @@ class Exp(psynet.experiment.Experiment):
     if DEBUG__:
         timeline = Timeline(
             consent(),
-            ScalesTrialMaker(
+            SuccessTrialMaker(
                 id_="main_experiment",
                 trial_class=SuccessTrial,
                 nodes=NODES,
@@ -146,7 +146,7 @@ class Exp(psynet.experiment.Experiment):
             HeadphoneTest(),
             BrightnessCalibration(image=BRIGHTNESS_CALIBRATION_IMAGE),
             instructions(),
-            ScalesTrialMaker(
+            SuccessTrialMaker(
                 id_="main_experiment",
                 trial_class=SuccessTrial,
                 nodes=NODES,
