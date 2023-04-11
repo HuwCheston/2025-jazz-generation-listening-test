@@ -48,11 +48,12 @@ NODES = [
 
 
 class SuccessTrial(StaticTrial):
-    time_estimate = 30
+    time_estimate = 50
 
     def get_text(self):
         text = [
             tags.h1("How successful was the performance?"),
+            tags.h2('Listen to the whole performance, and give your rating at the end')
         ]
         if DEBUG__:
             text.append(tags.p(

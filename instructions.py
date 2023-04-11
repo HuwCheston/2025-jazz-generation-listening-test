@@ -44,7 +44,7 @@ def instructions():
             with tags.ul():
                 tags.li(
                     """
-                    When making your judgement, you might want to watch the video as well as listen to the audio. 
+                    When making your judgement, you should watch the video as well as listen to the audio. 
                     """
                 )
                 tags.li(
