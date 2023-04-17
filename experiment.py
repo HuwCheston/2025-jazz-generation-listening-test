@@ -36,17 +36,6 @@ CONDITIONS = [
     *[(lat, jit) for lat in LATENCY_CONDITIONS for jit in JITTER_CONDITIONS]
 ]
 
-# Create our list of CachedAssets
-ASSETS = [
-    CachedAsset(
-        input_path=f'{VIDEOS_DIR}/d{duo_num}_s{session_num}_l{lat}_j{jit}_kdelay_ddelay.mp4',
-        # Think below argument is deprecated?
-        # key=d{duo_num} s{session_num} l{lat} j{jit} kdelay ddelay
-    )
-    for lat, jit in CONDITIONS
-    for session_num in range(1, NUM_SESSIONS + 1)
-    for duo_num in range(1, NUM_DUOS + 1)
-]
 
 NODES = [
     StaticNode(
@@ -55,6 +44,11 @@ NODES = [
             'session': session_num,
             'latency': lat,
             'jitter': jit
+        },
+        assets={
+            "stimulus": CachedAsset(
+                input_path=f'{VIDEOS_DIR}/d{duo_num}_s{session_num}_l{lat}_j{jit}_kdelay_ddelay.mp4',
+            )
         }
     )
     for lat, jit in CONDITIONS
