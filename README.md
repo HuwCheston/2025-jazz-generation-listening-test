@@ -18,12 +18,13 @@ git clone https://github.com/HuwCheston/2023-duo-success-analysis
 2. Download the complete set of video files (perceptual_study_videos.rar) from one of the following locations:
     - [Google Drive](https://drive.google.com/file/d/1KV1gEgpNmrv68Q7ynlQvCDOBY_DcBAep/view?usp=sharing)
     - Zenodo (forthcoming, when paper is published)
-3. Extract the .mp4 files (there should be 130) inside perceptual_study_videos.rar into the following directory. You may need to install a tool to open RAR files: I typically use [WinRAR](https://www.win-rar.com/start.html?&L=0) on Window and [Unar](https://theunarchiver.com/command-line) on Ubuntu
-```
-.\static\videos
-```
+3. Extract the .mp4 files (there should be 130) inside perceptual_study_videos.rar into `./assets/videos` .
+   You may need to install a tool to open RAR files: options include
+   [WinRAR](https://www.win-rar.com/start.html?&L=0) for Windows,  
+   [Unar](https://theunarchiver.com/command-line) for Ubuntu,
+   and Unarchiver for Mac.
 
-4. Follow the instructions inside docs/INSTALL.md to build and run as with any other PsyNet experiment
+4. Follow the instructions inside docs/INSTALL.md to build and run as with any other PsyNet experiment.
 
 ---
 

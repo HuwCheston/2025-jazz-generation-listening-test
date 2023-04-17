@@ -25,9 +25,9 @@ logger = get_logger()
 DEBUG__ = False
 TRIALS_PER_PARTICIPANT = 3 if DEBUG__ else 15
 
-VOLUME_CALIBRATION_AUDIO = 'static/calibration/output.mp3'
-BRIGHTNESS_CALIBRATION_IMAGE = 'static/calibration/brightness.jpg'
-VIDEOS_DIR = 'static/videos'
+VOLUME_CALIBRATION_AUDIO = 'assets/calibration/output.mp3'
+BRIGHTNESS_CALIBRATION_IMAGE = 'assets/calibration/brightness.jpg'
+VIDEOS_DIR = 'assets/videos'
 
 VIDEOS = [vid for vid in os.listdir(VIDEOS_DIR) if vid.endswith('.mp4')]    # Just use a few videos for now
 
