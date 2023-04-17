@@ -1,10 +1,7 @@
-import re
-import os
-
 from dominate import tags
 
 import psynet.experiment
-from psynet.prescreen import AntiphaseHeadphoneTest
+from psynet.prescreen import HeadphoneTest
 from psynet.asset import CachedAsset, LocalStorage
 from psynet.modular_page import VideoPrompt, SliderControl, PushButtonControl
 from psynet.page import SuccessfulEndPage, ModularPage
@@ -29,21 +26,40 @@ VOLUME_CALIBRATION_AUDIO = 'assets/calibration/output.mp3'
 BRIGHTNESS_CALIBRATION_IMAGE = 'assets/calibration/brightness.jpg'
 VIDEOS_DIR = 'assets/videos'
 
-VIDEOS = [vid for vid in os.listdir(VIDEOS_DIR) if vid.endswith('.mp4')]    # Just use a few videos for now
+NUM_DUOS = 5
+NUM_SESSIONS = 2
+LATENCY_CONDITIONS = ["23", "45", "90", "180"]
+JITTER_CONDITIONS = ["00", "05", "10"]
+# Create our list of conditions from latency + jitter values tested
+CONDITIONS = [
+    ("0", "00"),    # Control condition not tested with jitter
+    *[(lat, jit) for lat in LATENCY_CONDITIONS for jit in JITTER_CONDITIONS]
+]
+
+# Create our list of CachedAssets
+ASSETS = [
+    CachedAsset(
+        input_path=f'{VIDEOS_DIR}/d{duo_num}_s{session_num}_l{lat}_j{jit}_kdelay_ddelay.mp4',
+        # Think below argument is deprecated?
+        # key=d{duo_num} s{session_num} l{lat} j{jit} kdelay ddelay
+    )
+    for lat, jit in CONDITIONS
+    for session_num in range(1, NUM_SESSIONS + 1)
+    for duo_num in range(1, NUM_DUOS + 1)
+]
 
 NODES = [
     StaticNode(
         definition={
-            'duo': str(re.search('d(.*)_s', i).group(1)),   # Regex finds the trial info from the filename
-            'session': str(re.search('_s(.*)_l', i).group(1)),
-            'latency': str(re.search('_l(.*)_j', i).group(1)),
-            'jitter': str(float(re.search('_j(.*)_kdelay', i).group(1)) / 10),
-        },
-        assets={
-            'stimulus': CachedAsset(input_path=os.path.join(VIDEOS_DIR, i)),
+            'duo': duo_num,
+            'session': session_num,
+            'latency': lat,
+            'jitter': jit
         }
     )
-    for i in VIDEOS
+    for lat, jit in CONDITIONS
+    for session_num in range(1, NUM_SESSIONS + 1)
+    for duo_num in range(1, NUM_DUOS + 1)
 ]
 
 
@@ -144,7 +160,7 @@ class Exp(psynet.experiment.Experiment):
             experiment_requirements(),
             AudioCalibration(audio=VOLUME_CALIBRATION_AUDIO),
             headphone_test_intro(),
-            AntiphaseHeadphoneTest(),
+            HeadphoneTest(),
             BrightnessCalibration(image=BRIGHTNESS_CALIBRATION_IMAGE),
             instructions(),
             SuccessTrialMaker(
