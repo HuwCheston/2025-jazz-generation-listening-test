@@ -7,6 +7,12 @@
 #
 # dallinger@git+https://github.com/Dallinger/Dallinger.git@print-dashboard-url#egg=dallinger
 
-# Example pinning a particular version of PsyNet
-psynet@git+https://gitlab.com/PsyNetDev/PsyNet.git@8f9eae6d1fe07eebd7c73cfaa068a9fd5afdd5fd#egg=psynet
-dallinger@git+https://github.com/Dallinger/Dallinger.git@1719e7c8a7710b4e7c7a00293a8bbac5d5b6bc1b#egg=dallinger
+
+# Desired PsyNet branches:
+# - config-fix
+# - faster-exports
+psynet@git+https://gitlab.com/PsyNetDev/PsyNet.git@2b9aac0c48d786e61f1b7994248fe0fe2409c5b9#egg=psynet
+
+# Desired Dallinger branches:
+# - master
+dallinger@git+https://github.com/Dallinger/Dallinger.git@f2544424ef26941668ad046e4f5a7b57b950fa99#egg=dallinger
