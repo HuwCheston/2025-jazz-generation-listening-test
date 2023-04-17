@@ -101,13 +101,26 @@ It may ask you to setup an 'interpreter' at this point; ignore this message and 
 The first thing you should do is 'build' the experiment. The first time you build a PsyNet
 experiment it will download PsyNet and lots of other dependencies. Make sure you have a
 good internet connection for this, it will take a few minutes.
+
 You build the experiment by running the following in your PyCharm terminal:
 
 ```shell
 bash docker/build
 ```
 
-If you see some error messages at this point, see Troubleshooting.
+Note: if you see an error message like this:
+
+```shell
+./docker/run: Permission denied
+```
+
+run the following command, then try again:
+
+```shell
+chmod +x docker/*
+```
+
+If you see other error messages at this point, see Troubleshooting.
 
 ## Running the experiment
 
