@@ -4,7 +4,7 @@ import os
 from dominate import tags
 
 import psynet.experiment
-from psynet.prescreen import HeadphoneTest
+from psynet.prescreen import AntiphaseHeadphoneTest
 from psynet.asset import CachedAsset, LocalStorage
 from psynet.modular_page import VideoPrompt, SliderControl, PushButtonControl
 from psynet.page import SuccessfulEndPage, ModularPage
@@ -110,9 +110,9 @@ class SuccessTrialMaker(StaticTrialMaker):
 class Exp(psynet.experiment.Experiment):
     label = "Networked performance success experiment"
     asset_storage = LocalStorage()
-    variables = {
+    config = {
         "currency": "£",
-        "wage_per_hour": 10,
+        "wage_per_hour": 10.0,
         "window_width": 1024,
         "window_height": 1024,
     }
@@ -144,7 +144,7 @@ class Exp(psynet.experiment.Experiment):
             experiment_requirements(),
             AudioCalibration(audio=VOLUME_CALIBRATION_AUDIO),
             headphone_test_intro(),
-            HeadphoneTest(),
+            AntiphaseHeadphoneTest(),
             BrightnessCalibration(image=BRIGHTNESS_CALIBRATION_IMAGE),
             instructions(),
             SuccessTrialMaker(
