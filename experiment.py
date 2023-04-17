@@ -1,7 +1,7 @@
 from dominate import tags
 
 import psynet.experiment
-from psynet.prescreen import HeadphoneTest
+from psynet.prescreen import AntiphaseHeadphoneTest
 from psynet.asset import CachedAsset, LocalStorage
 from psynet.modular_page import VideoPrompt, SliderControl, PushButtonControl
 from psynet.page import SuccessfulEndPage, ModularPage
@@ -154,7 +154,7 @@ class Exp(psynet.experiment.Experiment):
             experiment_requirements(),
             AudioCalibration(audio=VOLUME_CALIBRATION_AUDIO),
             headphone_test_intro(),
-            HeadphoneTest(),
+            AntiphaseHeadphoneTest(),
             BrightnessCalibration(image=BRIGHTNESS_CALIBRATION_IMAGE),
             instructions(),
             SuccessTrialMaker(
