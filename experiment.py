@@ -155,7 +155,7 @@ class Exp(psynet.experiment.Experiment):
             experiment_requirements(),
             AudioCalibration(audio=VOLUME_CALIBRATION_AUDIO),
             headphone_test_intro(),
-            # AntiphaseHeadphoneTest(),
+            AntiphaseHeadphoneTest(),
             BrightnessCalibration(image=BRIGHTNESS_CALIBRATION_IMAGE),
             instructions(),
             SuccessTrialMaker(
