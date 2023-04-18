@@ -3,7 +3,7 @@ from dominate import tags
 import psynet.experiment
 from psynet.prescreen import AntiphaseHeadphoneTest
 from psynet.asset import CachedAsset, LocalStorage
-from psynet.modular_page import VideoPrompt, SliderControl, PushButtonControl
+from psynet.modular_page import VideoPrompt
 from psynet.page import SuccessfulEndPage, ModularPage
 
 from psynet.timeline import Timeline, Event
@@ -106,15 +106,6 @@ class SuccessTrial(StaticTrial):
 
 class SuccessTrialMaker(StaticTrialMaker):
     give_end_feedback_passed = False
-
-    def compute_bonus(self, score, passed):
-        max_bonus = 0.40
-        if score is None or score <= 0.0:
-            bonus = 0.0
-        else:
-            bonus = max_bonus * score
-        bonus = min(bonus, max_bonus)
-        return bonus
 
 
 class Exp(psynet.experiment.Experiment):
