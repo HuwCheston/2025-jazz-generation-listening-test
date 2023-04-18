@@ -84,6 +84,7 @@ class SuccessTrial(StaticTrial):
                 mirrored=False,
                 hide_when_finished=False,
                 width='850px',
+                # height='238px', # Ideally we'd pass this but VideoPrompt doesn't support height yet
                 controls=False,
                 play_window=[0, debug_cutoff] if DEBUG__ else [0, None]
             ),

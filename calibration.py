@@ -72,7 +72,7 @@ class BrightnessCalibration(Module):
         return PageMaker(
             lambda assets: ModularPage(
                 id_,
-                ImagePrompt(assets["brightness_calibration_image"], self.text(), height='100%', width='100%'),
+                ImagePrompt(assets["brightness_calibration_image"], self.text(), height="200px", width="600px"),
                 events={
                     "submitEnable": Event(is_triggered_by="trialStart", delay=min_time)
                 },
