@@ -35,7 +35,7 @@ class HearingImpairmentCheck(Module):
                         )
                     )
                 ),
-                control=PushButtonControl(["Yes", "No"], arrange_vertically=False),
+                control=PushButtonControl(["Yes", "No"], arrange_vertically=False, bot_response="No"),
                 time_estimate=time_estimate_per_trial,
             ),
             conditional(
