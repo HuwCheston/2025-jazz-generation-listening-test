@@ -4,13 +4,11 @@ description = This is a music listening experiment, but no musical expertise is 
 contact_email_on_error = hwc31@cam.ac.uk
 
 [Prolific]
-recruiter = prolific
+recruiter = hotair
 base_payment = 0
 prolific_estimated_completion_minutes = 1
 
 # 10 dollars an hour -> 16.666666667 cents per minutes
-prolific_reward_cents = 17
-
 auto_recruit = false
 
 # Set recruitment config manually in the Prolific dashboard:

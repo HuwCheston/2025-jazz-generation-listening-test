@@ -1,7 +1,11 @@
 assets/midi
 
+source_code.zip
+
 # Standard place to put a virtual environment
 env/
+venv/
+/venv/
 
 # Automatically generated deployment resources, e.g. database templates
 .deploy/
