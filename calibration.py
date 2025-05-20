@@ -5,9 +5,9 @@ from typing import Dict, List, Optional, Union
 
 from psynet.asset import CachedAsset, ExternalAsset
 from psynet.page import VolumeCalibration, PageMaker
-from psynet.modular_page import ModularPage, ImagePrompt, AudioPrompt, OptionControl, PushButton, Control
-from psynet.timeline import Event, Module
-from psynet.utils import NoArgumentProvided, linspace
+from psynet.modular_page import ModularPage, ImagePrompt, AudioPrompt, OptionControl, PushButton, Control, RadioButtonControl
+from psynet.timeline import Event, Module, MediaSpec, FailedValidation
+from psynet.utils import NoArgumentProvided, linspace, get_translator
 
 
 class AudioCalibration(VolumeCalibration):
@@ -230,3 +230,38 @@ class CustomSlider(Control):
         else:
             candidates = self.snap_values
         return random.sample(candidates, 1)[0]
+
+
+class AudioPromptMultiple(AudioPrompt):
+    macro = "audio_multi"
+    external_template = "custom-prompt.html"
+
+    def __init__(self,  *args, **kwargs):
+        self.all_audios = kwargs.pop("all_audio")
+        super().__init__(*args, **kwargs)
+
+    @property
+    def media(self):
+        return MediaSpec(
+            audio={
+                "anchor": self.all_audios["anchor"],
+                "test_a": self.all_audios["test_a"],
+                "test_b": self.all_audios["test_b"],
+            }
+        )
+
+
+class RadioButtonMultiple(RadioButtonControl):
+    macro = "radiobuttons_multi"
+    external_template = "custom-control.html"
+
+    def validate(self, response, **kwargs):
+        _p = get_translator(context=True)
+        print(response.answer, response.__dict__)
+        if self.force_selection and response.answer is None:
+            return FailedValidation(_p("validation", "You need to select an answerasdfasdga!"))
+        return None
+
+    def format_answer(self, raw_answer, **kwargs):
+        print(raw_answer)
+        return super().format_answer(raw_answer, **kwargs)

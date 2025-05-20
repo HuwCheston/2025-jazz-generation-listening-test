@@ -1,0 +1,139 @@
+{% macro simple(params) %}
+    {% if params.text is not none %}
+        <style>
+            #prompt-text {
+                text-align: {{ params.text_align }};
+            }
+        </style>
+        <div id="prompt-text">
+            {{ params.text_html }}
+        </div>
+    {% endif %}
+    <script>
+        let loop = {{ params.loop | tojson }};
+        psynet.trial.onEvent("trialFinished", function() {
+            if (loop) {
+                psynet.trial.restart();
+            }
+        });
+    </script>
+{% endmacro %}
+
+{% macro audio_multi(params) %}
+    {{ simple(params) }}
+
+    <style>
+        .audio-controls {
+            display: flex;
+            padding-top: 25px;
+            padding-bottom: 25px;
+        }
+        .audio-button {
+            margin-left: 10px;
+            margin-right: 10px;
+        }
+    </style>
+
+    <script>
+        var audioPromptPlayerOptions = {{ params.js_play_options | tojson }};
+        psynet.page.prompt.play = function(providedOptions) {
+            let options = psynet.utils.deepCopy(audioPromptPlayerOptions);
+            Object.assign(options, providedOptions);
+            let sound = psynet.audio.anchor.play(options);
+            sound.source.addEventListener("ended", function() {
+                psynet.trial.registerEvent("promptEnd");
+            });
+        };
+        psynet.page.prompt.stop = function(providedOptions) {
+            psynet.media.stopAllAudio();
+        }
+
+        psynet.trial.onEvent("promptStart", psynet.page.prompt.play);
+        psynet.trial.onEvent("trialPrepare", psynet.media.stopAllAudio);
+        psynet.trial.onEvent("trialStop", psynet.page.prompt.stop);
+
+        function playTestA() {
+            let options = psynet.utils.deepCopy(audioPromptPlayerOptions);
+            psynet.media.stopAllAudio()
+            let sound = psynet.audio.test_a.play(options);
+        }
+
+        function playTestB() {
+            let options = psynet.utils.deepCopy(audioPromptPlayerOptions);
+            psynet.media.stopAllAudio()
+            let sound = psynet.audio.test_b.play(options);
+        }
+
+
+    </script>
+
+    <div id="audio-prompt-controls" class="audio-controls">
+        <br><label>Anchor</label>
+        {% if "Play from start" in params.controls %}
+        <button id="audio-prompt-play" type="button" class="btn audio-button btn-primary btn-sm" disabled>
+            {{ params.controls["Play from start"] }}
+        </button>
+        {% endif %}
+        {% if "Stop" in params.controls %}
+        <button id="audio-prompt-stop" type="button" class="btn audio-button btn-secondary btn-sm" disabled>
+            {{ params.controls["Stop"] }}
+        </button>
+        {% endif %}
+    </div>
+
+    <div id="audio-testA-controls" class="audio-controls">
+        <br><label>Performance A</label>
+        {% if "Play from start" in params.controls %}
+        <button id="audio-testA-play" type="button" onclick="playTestA()" class="btn audio-button btn-primary btn-sm" disabled >
+            {{ params.controls["Play from start"] }}
+        </button>
+        {% endif %}
+        {% if "Stop" in params.controls %}
+        <button id="audio-testA-stop" type="button" onclick="psynet.media.stopAllAudio()" class="btn audio-button btn-secondary btn-sm" disabled>
+            {{ params.controls["Stop"] }}
+        </button>
+        {% endif %}
+    </div>
+
+    <div id="audio-testB-controls" class="audio-controls">
+        <br><label>Performance B</label>
+        {% if "Play from start" in params.controls %}
+        <button id="audio-testB-play" type="button" onclick="playTestB()" class="btn audio-button btn-primary btn-sm" disabled>
+            {{ params.controls["Play from start"] }}
+        </button>
+        {% endif %}
+        {% if "Stop" in params.controls %}
+        <button id="audio-testB-stop" type="button" onclick="psynet.media.stopAllAudio()" class="btn audio-button btn-secondary btn-sm" disabled>
+            {{ params.controls["Stop"] }}
+        </button>
+        {% endif %}
+    </div>
+
+    <script>
+
+    $(document).ready(function() {
+        $("#audio-prompt-play").on("click", function() {
+            psynet.trial.restart();
+        });
+        $("#audio-prompt-stop").on("click", function() {
+            psynet.trial.stop();
+        });
+        $("#audio-prompt-loop-input").on("change", function(event) {
+            loop = event.target.checked;
+        });
+        psynet.trial.onEvent("trialStop", psynet.media.stopAllAudio);
+    });
+
+    psynet.trial.onEvent("trialConstruct", function() {
+        $("#audio-prompt-play").prop("disabled", false)
+        $("#audio-prompt-stop").prop("disabled", false)
+    });
+    psynet.trial.onEvent("promptEnd", function() {
+        $("#audio-testA-play").prop("disabled", false)
+        $("#audio-testA-stop").prop("disabled", false)
+        $("#audio-testB-play").prop("disabled", false)
+        $("#audio-testB-stop").prop("disabled", false)
+    });
+
+    </script>
+{% endmacro %}

@@ -1,358 +1,85 @@
-{% macro null(config) %}
-    <script>
-        disableButton = function() {
-            $("#next-button").attr("disabled", true)
-            $("#next-button-spinner").show()
-            $("#next-button-text").hide();
-        };
-
-        enableButton = function() {
-            $("#next-button").attr("disabled", false)
-            $("#next-button-spinner").hide()
-            $("#next-button-text").show();
-        }
-
-        onNextButton = function() {
-            let width = $("#next-button").width()
-            $("#next-button").width(width); // Locks the button width to the current width
-
-            disableButton();
-
-            function onRejection() {
-                enableButton();
-            }
-
-            if (typeof retrieveResponse == "undefined") {
-                psynet.nextPage();
-            } else {
-                let response = retrieveResponse();
-                psynet.nextPage(
-                    response.rawAnswer,
-                    response.metadata,
-                    response.blobs,
-                    onRejection,
-                );
-            }
-        }
-    </script>
-
-    <button type="button" id="next-button" class="btn btn-primary btn-lg submit" onclick="onNextButton();" disabled="true">
-        <span id="next-button-spinner" class="spinner-border spinner-border-sm" role="status" aria-hidden="true" style="display: none"></span>
-        <span id="next-button-text">{{ gettext("Next") }}</span>
-    </button>
+{% macro radiobutton(params) %}
+    <label style="margin-left: 15px;">
+        <input
+            type="radio"
+            id="{{ params.id }}"
+            name="{{ params.name }}"
+            class="response"
+            style="{{ params.style }}"
+        />
+        <span style="{{ params.style }}">{{ params.label }}</span>
+    </label>
 {% endmacro %}
 
-{% macro HTML5_range_slider(config) %}
+{% macro radiobuttons_multi(params) %}
     <style>
-        #{{ config.slider_id }} {
-            appearance: none;
-            width: 100%;
-            height: 20px;
-            background: #c4d4fc;
-            border: 1px solid #b2b2b2;
-            border-radius: 10px;
-            outline: none;
-            opacity: 0.7;
-            margin: 0;
-            {% if config.reverse_scale == true %} direction: rtl; {% endif %}
-        }
-
-        .sliderticks {
-            display: flex;
-            width: 100%;
-            justify-content: space-between;
-            padding: 0 calc(2.7% - 2px);
-            box-sizing: border-box;
-        }
-
-        .sliderticks p {
-            position: relative;
-            display: flex;
-            justify-content: center;
-            text-align: center;
-            width: 1px;
-            background: #D3D3D3;
-            height: 10px;
-            line-height: 40px;
-            margin: 0 0 20px 0;
-        }
-
-        #{{ config.slider_id }}:hover {
-            transition: 0.1s linear;
-            opacity: 1;
-        }
-
-        #{{ config.slider_id }}:not(:hover) {
-            transition: 0.1s linear;
-            opacity: 0.7;
-        }
-
-        input[type=range]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            border: 1px solid #577eee;
-            height: 20px;
-            background-color: #577eee;
-            border-radius: 10px;
-            position: relative;
-            cursor: pointer;
-            width: 40px;
-        }
-
-        input[type=range]::-webkit-slider-thumb:hover {
-            -webkit-box-shadow: 0px 0px 5px 5px #c4d4fc;
-            box-shadow: 0px 0px 5px 5px  #c4d4fc;
-            width: 45px;
-            height: 22.5px;
-            transition: 0.1s linear;
-        }
-
-        input[type=range]::-webkit-slider-thumb:not(:hover) {
-            -webkit-box-shadow: 0px 0px 0px transparent;
-            box-shadow: 0px 0px 0px 0px transparent;
-            height: 20px;
-            width: 40px;
-            transition: 0.1s linear;
+        .control-container {
+            display: {% if params.arrange_vertically %}grid{% else %}flex{% endif %};
+            flex-wrap: wrap;
+            {#justify-content: center;#}
+            max-height: 420px;
+            overflow-y: auto;
         }
     </style>
 
-    <input
-        type="range"
-        id="{{ config.slider_id }}"
-        class="wait-for-media-load slider-range form-control-range{% if not config.directional %} slider-non-directional{% endif %}"
-        min="{{ config.min_value }}"
-        max="{{ config.max_value + 0.0001 * config.step_size }}"
-        step="{{ config.step_size }}"
-        value="{{ config.start_value }}"
-        random-wrap="{{ config.random_wrap }}"
-    >
+    <div class="control-container">
+      <form action="">
+        <table>
+          <tr>
+            <td colspan="6"><h3>Which performance is more similar to the anchor?</h3></td>
+          </tr>
+          <tr>
+            <td><label for="sim_perfA">Performance A</label></td>
+            <td><input id="sim_perfA" type="radio" name="similarity" value="sim_perfA" style="margin-right: 60px;"></td>
 
-    <script>
-        let enableSlider = function() {
-            if (disableWhilePlaying){
-                slider.disabled=false;
-                psynet.log.debug('Horizontal slider is enabled');
-            }
-        };
+            <td><label for="sim_perfB">Performance B</label></td>
+            <td><input id="sim_perfB" type="radio" name="similarity" value="sim_perfB" style="margin-right: 60px;"></td>
 
-        let disableSlider = function() {
-            if (disableWhilePlaying){
-                slider.disabled=true;
-                psynet.log.debug('Horizontal slider is disabled');
-            }
-        };
-    </script>
-{% endmacro %}
+            <td><label for="sim_null">No Preference</label></td>
+            <td><input id="sim_null" type="radio" name="similarity" value="sim_null" style="margin-right: 60px;"></td>
+          </tr>
 
-{% macro custom_slider(config) %}
+          <tr>
+            <td colspan="6"><h3>Which performance do you prefer?</h3></td>
+          </tr>
+          <tr>
+            <td><label for="pref_perfA">Performance A</label></td>
+            <td><input id="pref_perfA" type="radio" name="preference" value="pref_perfA" style="margin-right: 60px;"></td>
 
-    <style>
-        #textbox {
-            display: flex;
-            justify-content: space-between;
-        }
-    </style>
-    <div id="textbox">
-        <p class="alignleft">Extremely unsuccessful</p>
-        <p class="aligncenter">Neither successful nor unsuccessful</p>
-        <p class="alignright">Extremely successful</p>
+            <td><label for="pref_perfB">Performance B</label></td>
+            <td><input id="pref_perfB" type="radio" name="preference" value="pref_perfB" style="margin-right: 60px;"></td>
+
+            <td><label for="pref_null">No Preference</label></td>
+            <td><input id="pref_null" type="radio" name="preference" value="pref_null" style="margin-right: 60px;"></td>
+          </tr>
+        </table>
+      </form>
     </div>
-    <div style="clear: both;"></div>
 
-    {{ HTML5_range_slider(config) }}
-    <div id="slidertick_container" class="sliderticks"></div>
     <p class="vspace"></p>
-    {{ null(config) }}
-
     <script>
-        {% autoescape off %}
-        var snapValues = {% if config.js_vars.snap_values is none %}null{% else %}{{ config.js_vars.snap_values }}{% endif %};
-        var minimalInteractions = {% if config.js_vars.minimal_interactions is none %}null{% else %}{{ config.js_vars.minimal_interactions }}{% endif %};
-        var continuousUpdates = {% if config.js_vars.continuous_updates is not defined or config.js_vars.continuous_updates is none %}null{% else %}{{ config.js_vars.continuous_updates | lower }}{% endif %};
-        var sliderId = '{{ config.slider_id }}';
-        var randomWrap = {{ config.random_wrap | lower }}; // Decide whether to add to js_vars
-        var minVal = {{ config.min_value }}; // Decide whether to add to js_vars
-        var maxVal = {{ config.max_value }}; // Decide whether to add to js_vars
-        var includeLabels = {{ config.include_labels | lower }};
-        var labelStep = {{ config.label_step }};
-        {% endautoescape %}
-
-        // Adds in labels below the slider
-        if (includeLabels) {
-            container = document.getElementById("slidertick_container")
-            let i = minVal
-            while (i <= maxVal) {
-                let element = document.createElement("p");
-                element.id = "tick_" + i.toString();
-                element.appendChild(document.createTextNode(i.toString()));
-                document.getElementById("slidertick_container").appendChild(element);
-                i += labelStep;
-            }
+        clickedButton = function(id) {
+            psynet.response.disable();
+            psynet.submit.disable();
+            psynet.nextPage(id);
         }
-
-        // This is called each time
-        // To do - refactor this using psynet.trial.onEvent
-        onSliderEvent = function (eventType) {
-
-        };
-
-        // Metadata collection
-        var slider = document.getElementById(sliderId);
-
-        if (continuousUpdates) {
-            slider.log = "The slider log is disabled when continuous slider updates are enabled.";
-        } else {
-            slider.log = [];
-        }
-
-        // To do - refactor this into psynet.trial.eventLog
-        slider.updateLog = function() {
-            if (!continuousUpdates) {
-                slider.log.push({
-                    'time': new Date(),
-                    'value': slider.value,
-                    'outputValue': slider.getAttribute("output-value")
-                });
-            }
-        }
-
-        slider.interactionCount = 0;
-
-        let setSliderValue = function(val) {
-            {% if config.input_type == "HTML5_range_slider" %}
-                slider.value = val;
-            {% elif config.input_type == "circular_slider" %}
-                throw Error("Programmatically seting the slider value is not supported yet");
-                $(".circular-slider").val(val).trigger("change");
-            {% endif %}
-        }
-
-        let snapSlider = function () {
-            let rawValue = parseFloat(slider.value);
-            if (snapValues == null) {
-                psynet.log.debug("Slider value: " + rawValue + " (no snapping).");
-                return rawValue
-            } else {
-                let newValue = psynet.utils.closest(slider.value, snapValues).value;
-                psynet.snapping = true; // TODO: can this be removed?
-                setSliderValue(newValue);
-                psynet.log.debug("Snapped slider from " + rawValue + " to " + newValue);
-                return newValue;
-            }
-        };
-
-        let formatSliderValue = function () {
-            let rawValue = parseFloat(slider.value);
-            let outputValue;
-
-            if (randomWrap) {
-                let phase = slider.getAttribute("phase")
-                outputValue = wrapSliderValue(rawValue, phase);
-            } else  {
-                outputValue = rawValue;
-            }
-
-            slider.setAttribute("raw-value", rawValue);
-            slider.setAttribute("output-value", outputValue);
-            psynet.log.debug("Slider rawValue = " + rawValue + ", slider outputValue = " + outputValue);
-        };
-
-        let sampleSliderPhase = function () {
-            let phase = minVal + (2 * (maxVal - minVal)) * Math.random()
-            return phase
-        };
-
-        let wrapSliderValue = function (value, phase) {
-            // first, the original value of the slider is wrapped twice, creating a new virtual
-            // range between min and min+2(max-min)
-            let valueNewRange =  minVal + 2 * (value - minVal);
-            // second, we we adjust it to incorporate a given phase
-            let valueNewRangeWithPhase =  mod((valueNewRange - phase), (2 * (maxVal - minVal))) + minVal;
-            let outputValue = - Math.abs(valueNewRangeWithPhase - maxVal) + maxVal;
-            return outputValue
-        };
-
-        let mod = function(a, n){
-            // in JS it, the builtin modulo operator is a remainder operator not a modulo operator
-            // this function uses a modulo operator as in Python
-            return a - (n * Math.floor(a/n));
-        };
-
-        psynet.trial.onEvent("trialPrepare", () => {
-            let phase;
-            if (randomWrap) {
-                phase = sampleSliderPhase();
-            } else {
-                phase = 0.0;
-            }
-            slider.setAttribute("phase", phase);
-            slider.setAttribute("random-wrap", randomWrap);
-            psynet.log.debug("Slider phase:" + phase);
-            snapSlider();
-            formatSliderValue();
-            onSliderEvent("initialise");
-            slider.updateLog();
-        });
-
-        let hadMinimalInteractions = false;
-        let checkMinimalInteractions = function() {
-            if (slider.interactionCount >= minimalInteractions && !hadMinimalInteractions) {
-                hadMinimalInteractions = true;
-                psynet.trial.registerEvent("sliderMinimalInteractions");
-            }
-        }
-
-        let sliderOnInput = function() {
-            // Triggered whenever the slider slides to a new value
-            if (continuousUpdates) {
-                snapSlider();
-            }
-            formatSliderValue();
-            if (continuousUpdates) {
-                onSliderEvent("sliderChanged");
-                slider.updateLog();
-            }
-        };
-
-        let sliderOnChange = function() {
-            // Triggered whenever the slider is released on a new value
-            if (!continuousUpdates) {
-                snapSlider();
-                onSliderEvent("sliderChanged");
-                slider.updateLog();
-            }
-            slider.interactionCount += 1;
-            checkMinimalInteractions();
-            psynet.trial.registerEvent("sliderChange", {
-                info: {
-                    outputValue: slider.value
-                }
-            });
-        }
-
-        slider.addEventListener("input", sliderOnInput, false);
-        slider.addEventListener("change", sliderOnChange, false);
-
-        psynet.trial.onEvent("trialConstruct", () => {
-            checkMinimalInteractions();
-        });
 
         retrieveResponse = function() {
-            let outputValue = parseFloat(slider.getAttribute("output-value"));
-            let rawAnswer = outputValue;
-            let metadata = {
-              rawValue: parseFloat(slider.value),
-              outputValue: outputValue,
-              phase: parseFloat(slider.getAttribute("phase"))
-            };
-            return {
-                rawAnswer: rawAnswer,
-                metadata: metadata
-            }
-        };
-    </script>
+            // Get selected value for "similarity"
+            let similarityElement = document.querySelector('input[name="similarity"]:checked');
+            let similarityAnswer = similarityElement ? similarityElement.id : null;
 
-    {% if config.template_filename %}
-        {% include config.template_filename %}
-    {% endif %}
+            // Get selected value for "preference"
+            let preferenceElement = document.querySelector('input[name="preference"]:checked');
+            let preferenceAnswer = preferenceElement ? preferenceElement.id : null;
+
+            let rawAnswer = {
+                similarity: similarityAnswer,
+                preference: preferenceAnswer
+            }
+            console.log(rawAnswer)
+            return rawAnswer;
+        }
+    </script>
 
 {% endmacro %}

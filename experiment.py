@@ -1,10 +1,14 @@
 import os
+import random
+import sys
+
+sys.path.append("..")
 
 from dominate import tags
 
 import psynet.experiment
 from psynet.asset import CachedAsset, LocalStorage
-from psynet.modular_page import VideoPrompt
+from psynet.modular_page import AudioPrompt, RadioButtonControl, Prompt, SurveyJSControl
 from psynet.page import SuccessfulEndPage, ModularPage
 
 from psynet.timeline import Timeline, Event
@@ -15,44 +19,115 @@ from .consent import consent
 from .debrief import debriefing
 from .instructions import instructions
 from .questionnaire import questionnaire
-from .calibration import AudioCalibration, CustomSlider
+from .calibration import AudioCalibration, AudioPromptMultiple, RadioButtonMultiple
 from .checks import experiment_requirements
 
 logger = get_logger()
 
 DEBUG__ = False
-TRIALS_PER_PARTICIPANT = 3 if DEBUG__ else 15
+TRIALS_PER_PARTICIPANT = 3 if DEBUG__ else 10
 
 VOLUME_CALIBRATION_AUDIO = 'assets/calibration/output.mp3'
-BRIGHTNESS_CALIBRATION_IMAGE = 'assets/calibration/brightness.jpg'
-MIDI_DIR = 'assets/midi'
+AUDIO_DIR = 'assets/render'
 
-GENRES = ["avantgardejazz", "global", "souljazz", "straightaheadjazz", "traditionalearlyjazz"]
-N_MIDIS = 20
-TYPES = ["gen", "real"]
-
+GENRES = ["avantgardejazz", "global", "straightaheadjazz", "traditionalearlyjazz"]
 NODES = []
-for n in range(N_MIDIS):
-    for t in TYPES:
-        for g in GENRES:
-            fpath = f'{MIDI_DIR}/{g}_{str(n).zfill(3)}_{t}.mid'
-            if not os.path.exists(fpath):
-                logger.warning(f"Cannot find asset at {fpath}")
-                continue
 
-            node = StaticNode(
-                definition={
-                    "genre": g,
-                    "type": t,
-                    "number": n,
-                },
-                assets={
-                    "stimulus": CachedAsset(
-                        input_path=f'{MIDI_DIR}/{g}_{str(n).zfill(3)}_{t}.mid',
-                    )
-                }
-            )
-            NODES.append(node)
+TEST_DESCRIPTIONS = [
+    ("CLaMP/target", "CLaMP/wrong"),
+    ("nCLaMP/target", "nCLaMP/wrong"),
+    ("CLaMP/target", "real/wrong"),
+    ("CLaMP/target", "real/target"),
+    ("nCLaMP/target", "real/wrong"),
+    ("nCLaMP/target", "real/target"),
+    ("CLaMP/target", "nCLaMP/target"),
+]
+
+real_paths = [i for i in os.listdir(AUDIO_DIR) if "real" in i]
+for anchor in real_paths:
+    anchor_path = os.path.join(AUDIO_DIR, anchor)
+    genre, anchor_id = anchor.split("_")[0], anchor.split("_")[-1].split(".")[0]
+    if genre not in GENRES:
+        continue
+    # Get generated paths
+    generates_same_genre_clamp = [i for i in os.listdir(AUDIO_DIR) if i.startswith(genre) and "gen_clamp" in i]
+    generates_same_genre_noclamp = [i for i in os.listdir(AUDIO_DIR) if i.startswith(genre) and "gen_noclamp" in i]
+    generates_diff_genre_clamp = [i for i in os.listdir(AUDIO_DIR) if not i.startswith(genre) and "gen_clamp" in i]
+    generates_diff_genre_noclamp = [i for i in os.listdir(AUDIO_DIR) if not i.startswith(genre) and "gen_noclamp" in i]
+    # Get real paths
+    reals_same_genre = [
+        i for i in os.listdir(AUDIO_DIR)
+        if i.startswith(genre)
+        and "real_" in i
+        and i != anchor     # should not be the same as the anchor!
+        and i.split("_")[-1].split(".")[0] != anchor_id     # shouldn't have the same track ID
+    ]
+    reals_diff_genre = [
+        i for i in os.listdir(AUDIO_DIR)
+        if not i.startswith(genre)
+        and "real_" in i
+        and i.split("_")[-1].split(".")[0] != anchor_id     # shouldn't have the same track ID
+    ]
+    # TEST 1: CLaMP/target | CLaMP/wrong
+    test_1 = (
+        random.choice(generates_same_genre_clamp), random.choice(generates_diff_genre_clamp)
+    )
+    # TEST 2: nCLaMP/target | nCLaMP/wrong
+    test_2 = (
+        random.choice(generates_same_genre_noclamp), random.choice(generates_diff_genre_noclamp)
+    )
+    # TEST 3: CLaMP/target | real/wrong
+    test_3 = (
+        random.choice(generates_same_genre_clamp), random.choice(reals_diff_genre)
+    )
+    # TEST 4: CLaMP/target | real/target
+    test_4 = (
+        random.choice(generates_same_genre_clamp), random.choice(reals_same_genre)
+    )
+    # TEST 5: nCLaMP/target | real/wrong
+    test_5 = (
+        random.choice(generates_same_genre_noclamp), random.choice(reals_diff_genre)
+    )
+    # TEST 6: nCLaMP/target | real/target
+    test_6 = (
+        random.choice(generates_same_genre_noclamp), random.choice(reals_same_genre)
+    )
+    # TEST 7: CLaMP/target | nCLaMP/target
+    test_7 = (
+        random.choice(generates_same_genre_clamp), random.choice(generates_same_genre_noclamp)
+    )
+    # Iterate over all tests and descriptions of them
+    for test, description in zip([test_1, test_2, test_3, test_4, test_5, test_6, test_7], TEST_DESCRIPTIONS):
+        # Get all file-paths correctly
+        test_a, test_b = test
+        test_a_path = os.path.join(AUDIO_DIR, test_a)
+        test_b_path = os.path.join(AUDIO_DIR, test_b)
+        # Check all paths exist on disk
+        assert os.path.isfile(test_a_path)
+        assert os.path.isfile(test_b_path)
+        assert os.path.isfile(anchor_path)
+        # Create the current node
+        node = StaticNode(
+            definition={
+                "genre": genre,
+                "description": description,
+                "anchor": anchor,
+                "test_a": test_a,
+                "test_b": test_b,
+            },
+            assets={
+                "anchor": CachedAsset(
+                    input_path=anchor_path,
+                ),
+                "test_a": CachedAsset(
+                    input_path=test_a_path,
+                ),
+                "test_b": CachedAsset(
+                    input_path=test_b_path,
+                )
+            }
+        )
+        NODES.append(node)
 
 
 class SuccessTrial(StaticTrial):
@@ -60,41 +135,90 @@ class SuccessTrial(StaticTrial):
 
     def get_text(self):
         text = [
-            tags.h1("How successful was the performance?"),
-            tags.h2('Listen to the whole performance, and give your rating at the end')
+            tags.h1("Listen to the performances"),
         ]
         if DEBUG__:
             text.append(tags.p(
-                    f"Duo: {self.node.definition['duo']}\n"
-                    f"Session: {self.node.definition['session']}\n"
-                    f"Latency: {self.node.definition['latency']}\n"
-                    f"Jitter: {self.node.definition['jitter']}"
+                    f"Genre: {self.node.definition['genre']}\n"
+                    f"Test description: {self.node.definition['description']}\n"
+                    f"Anchor: {self.node.definition['anchor']}\n"
+                    f"A: {self.node.definition['test_a']}\n"
+                    f"B: {self.node.definition['test_b']}\n"
                 )
             )
         return tags.div(*text)
 
-    def show_trial(self, _,  __, debug_cutoff: float = 4):
+    def show_trial(self, *_, **__):
         return ModularPage(
-            "rating",
-            VideoPrompt(
-                video=self.node.assets['stimulus'],
+            label="rating",
+            prompt=AudioPromptMultiple(
+                audio=self.node.assets['anchor'],
+                all_audio=self.node.assets,
                 text=self.get_text(),
-                mirrored=False,
-                hide_when_finished=False,
-                width='850px',
-                # height='238px', # Ideally we'd pass this but VideoPrompt doesn't support height yet
-                controls=False,
-                play_window=[0, debug_cutoff] if DEBUG__ else [0, None]
+                loop=False,
+                controls=True,
             ),
-            CustomSlider(
-                start_value=5,
-                min_value=1,
-                max_value=9,
-                n_steps=9,
-                snap_values=9,
-                directional=False,
-                include_labels=True,
-                label_step=1
+            control=SurveyJSControl(design={
+                  "pages": [
+                    {
+                      "name": "page1",
+                      "elements": [
+                        {
+                          "type": "matrix",
+                          "name": "similar",
+                          "title": "Which performance is most similar to the Anchor?",
+                          "isRequired": True,
+                          "columns": [
+                            {
+                              "value": "perf_a",
+                              "text": "Performance A"
+                            },
+                            {
+                              "value": "perf_b",
+                              "text": "Performance B"
+                            },
+                            {
+                              "value": "null",
+                              "text": "No Preference"
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "value": "similar_perf",
+                              "text": "Make a selection"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "matrix",
+                          "name": "preference",
+                          "title": "Which performance do you prefer?",
+                          "isRequired": True,
+                          "columns": [
+                            {
+                              "value": "perf_a",
+                              "text": "Performance A"
+                            },
+                            {
+                              "value": "perf_b",
+                              "text": "Performance B"
+                            },
+                            {
+                              "value": "null",
+                              "text": "No Preference"
+                            }
+                          ],
+                          "rows": [
+                            {
+                              "value": "prefer_perf",
+                              "text": "Make a selection"
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
             ),
             events={
                 "responseEnable": Event(is_triggered_by="promptStart"),
@@ -108,8 +232,9 @@ class SuccessTrialMaker(StaticTrialMaker):
 
 
 class Exp(psynet.experiment.Experiment):
-    label = "Networked performance success experiment"
+    label = "Jazz music generation listening test"
     asset_storage = LocalStorage()
+    max_exp_dir_size_in_mb = 1000000000
     config = {
         "currency": "£",
         "wage_per_hour": 0.0,
