@@ -4,6 +4,7 @@ import sys
 
 sys.path.append("..")
 
+import numpy as np
 from dominate import tags
 
 import psynet.experiment
@@ -30,6 +31,12 @@ except ImportError:
     from questionnaire import questionnaire
     from calibration import AudioCalibration, AudioPromptMultiple
     from checks import experiment_requirements
+
+
+def seed_everything(seed: int = 42) -> None:
+    """Sets all random seeds for reproducible results."""
+    random.seed(seed)
+    np.random.seed(seed)
 
 
 def check_lists_unique(*list_of_lists: list[str]):
@@ -153,8 +160,9 @@ def get_nodes():
 
 logger = get_logger()
 
-DEBUG__ = True
-TRIALS_PER_PARTICIPANT = 3 if DEBUG__ else 10
+seed_everything(seed=42)
+DEBUG__ = False
+TRIALS_PER_PARTICIPANT = 3 if DEBUG__ else 8
 
 VOLUME_CALIBRATION_AUDIO = 'assets/calibration/output.mp3'
 AUDIO_DIR = 'assets/render'
@@ -195,6 +203,7 @@ class RateTrial(StaticTrial):
             label="rating",
             prompt=AudioPromptMultiple(
                 audio=self.node.assets['anchor'],
+                definition=self.node.definition,
                 all_audio=self.node.assets,
                 text=self.get_text(),
                 loop=False,
