@@ -9,44 +9,6 @@ from psynet.page import InfoPage, SuccessfulEndPage, UnsuccessfulEndPage
 from psynet.timeline import CodeBlock, PageMaker, join, Event, Module, conditional
 
 
-class HearingImpairmentCheck(Module):
-    """
-
-    """
-
-    def __init__(
-        self,
-        label: str = 'hearing_impairment_check',
-        time_estimate_per_trial: float = 3.0,
-    ):
-
-        self.label = label
-        self.elts = join(
-            ModularPage(
-                self.label,
-                Prompt(
-                    tags.div(
-                        tags.h1('Hearing check'),
-                        tags.p(
-                            """
-                            Do you have any kind of hearing impairment? 
-                            (I.e., do you have problems with your hearing?)
-                            """
-                        )
-                    )
-                ),
-                control=PushButtonControl(["Yes", "No"], arrange_vertically=False, bot_response="No"),
-                time_estimate=time_estimate_per_trial,
-            ),
-            conditional(
-                'hearing_impairment_check',
-                lambda experiment, participant: participant.answer == 'Yes',
-                UnsuccessfulEndPage(failure_tags=['hearing_impairment_check'])
-            )
-        )
-        super().__init__(self.label, self.elts)
-
-
 def experiment_requirements(
         time_estimate: float = 10
 ) -> InfoPage:
@@ -84,28 +46,4 @@ def experiment_requirements(
             )
         ),
         time_estimate=time_estimate,
-    )
-
-
-def headphone_test_intro(
-        time_estimate: float = 5
-) -> InfoPage:
-    """
-
-    :param time_estimate:
-    :return:
-    """
-
-    return InfoPage(
-        tags.div(
-            tags.h1('Headphone check'),
-            tags.p(
-                """
-                We will now perform a short listening test to verify that your audio is working properly.
-                This test will be difficult to pass unless you listen carefully over your headphones.
-                Press 'Next' when you are ready to start.
-                """
-            )
-        ),
-        time_estimate=time_estimate
     )

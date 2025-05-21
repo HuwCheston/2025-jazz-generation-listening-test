@@ -54,56 +54,44 @@ with information_sheet:
 
     with tags.p():
         tags.strong("Benefits of taking part.")
-        # tags.span(
-        #     """
-        #     After completing the experiment, you will have the option of providing your email address to be entered
-        #     into a draw with a chance of winning a £50 Amazon gift voucher.
-        #     """
-        # )
+        # For Cambridge students
         tags.span(
             """
-            Completing the entire experiment earns you a payment of approximately £2.50. This fee is calculated by
-            multiplying a notional hourly rate of £10.00/hour by the estimated duration of the experiment. However,
-            please note the following:
+            After completing the experiment, you will have the option of providing your email address to be entered
+            into a draw with a chance of winning a £50 Amazon gift voucher. The prize draw will be made once data
+            collection for the experiment has finished.
             """
         )
-        with tags.ul():
-            tags.li(
-                """
-                Taking the experiment more slowly does not earn you a greater total payment. The total payment is fixed
-                according to the 
-                """,
-                tags.em("estimated"),
-                " duration of the experiment",
-            )
-
-            tags.li(
-                """
-                Your experiment could end early for a number of reasons, including but not limited to technical failure
-                and task performance. In this case you will be compensated pro rata for the portion of the experiment
-                that you completed.
-                """
-            )
+        # For prolific/online participants
+        # tags.span(
+        #     """
+        #     Completing the entire experiment earns you a payment of approximately £2.50. This fee is calculated by
+        #     multiplying a notional hourly rate of £10.00/hour by the estimated duration of the experiment. However,
+        #     please note the following:
+        #     """
+        # )
+        # with tags.ul():
+        #     tags.li(
+        #         """
+        #         Taking the experiment more slowly does not earn you a greater total payment. The total payment is fixed
+        #         according to the
+        #         """,
+        #         tags.em("estimated"),
+        #         " duration of the experiment",
+        #     )
 
     with tags.p():
         tags.strong("Confidentiality.")
         tags.span(
             """
-            No personal details (e.g. name, contact data) will be collected at any stage, so your data will be anonymous
-            throughout. This anonymous data may eventually be shared in public data repositories, conferences, and
-            scientific journals.
+            If you provide your email to be entered into the prize draw, this will be stored on a secure computer
+            server and removed once data collection for this experiment has ended.
+            
+            No other personal details (e.g. name, contact data) will be collected at any stage, so your data will be 
+            anonymous throughout. This anonymous data may eventually be shared in public data repositories, conferences,
+            and scientific journals.
             """
         )
-        # tags.span(
-        #     """
-        #     If you provide your email to be entered into the prize draw, this will be stored on a secure computer
-        #     server and removed once data collection for this experiment has ended.
-        #
-        #     No other personal details will be collected at any stage so your data will be anonymous
-        #     throughout. This anonymous data may eventually be shared in public data repositories, conferences, and
-        #     scientific journals.
-        #     """
-        # )
 
     with tags.p():
         tags.strong("Ethical review.")
@@ -112,11 +100,14 @@ with information_sheet:
             The project has been approved by the University of Cambridge Faculty of Music Ethics Committee.
             
             We are conscious of the ethical issues that are raised by training machines to generate music. Our models 
-            are trained on open-source data and are released under *non-commercial* licenses. This means that other 
-            people will not be able to profit by using them to create their own music to sell, nor will they be 
-            able to sell any of the outputs we have generated using these models.
+            are trained on open-source data. This means that anybody can access the music we used to train the model.
+            Our models are also released under non-commercial licenses. This means that other people will not be able 
+            to profit by using our model to create their own music to sell, nor will they be able to sell any of the 
+            music we have generated using these models. Ultimately, 
             """
         )
+        tags.em("this research is about using artificial intelligence to better understand music, ")
+        tags.span("and not to replace musicians.")
 
     with tags.p():
         tags.strong("Contact for further information.")

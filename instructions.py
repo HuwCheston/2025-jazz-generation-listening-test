@@ -15,11 +15,23 @@ def instructions():
                 """
                 In this experiment, you will listen to multiple piano performances.
                 
-                You will hear an initial performance, and then two subsequent performances. You will be asked to compare
-                the second two performances to the first performance in response to several questions. For instance, 
-                you might be asked to indicate which of the two performances are more similar to the first.
+                You will hear an initial performance 
                 """
             )
+            tags.strong("(the anchor), ")
+            tags.span("and then two subsequent performances")
+            tags.strong("(A and B).")
+
+        with tags.p():
+            tags.strong("Task:")
+            tags.span(
+                """
+                You will be asked several questions about the performances.
+                For instance, you might be asked to indicate which of A or B sounded more like the anchor.
+                You may also be asked to indicate which of A or B you enjoyed more.
+                """
+            )
+
         with tags.p():
             tags.strong('Advice:')
             tags.em(
@@ -37,6 +49,11 @@ def instructions():
                 tags.li(
                     """
                     Take as much time as you need to answer the questions.
+                    """
+                )
+                tags.li(
+                    """
+                    Some performances may sound unusual, but you should do the best to complete the task regardless.
                     """
                 )
                 tags.li(
@@ -60,52 +77,3 @@ def instructions():
         )
 
     return InfoPage(html, time_estimate=15)
-
-
-# def genres():
-#     html = tags.div()
-#     with html:
-#         tags.h1("Jazz Genres")
-#
-#         with tags.p():
-#             tags.span(
-#                 """
-#                 You will hear the following subgenres of jazz: "Avant-Garde", "Traditional", "Straight-Ahead",
-#                 and "Global".
-#                 """
-#             )
-#         with tags.p():
-#             tags.strong('Avant-Garde Jazz')
-#             tags.span(
-#                 """
-#                 is an experimental sub-genre that breaks conventional musical forms and harmonies,
-#                 often embracing free improvisation and abstract expression. Example performers include
-#                 Cecil Taylor and Keith Jarrett.
-#                 """
-#             )
-#         with tags.p():
-#             tags.strong('Traditional Jazz')
-#             tags.span(
-#                 """
-#                 refers to the early styles of jazz such as New Orleans jazz and Dixieland,
-#                 rooted in blues, ragtime, and brass band music. Example performers include Art Tatum and
-#                 Teddy Wilson.
-#                 """
-#             )
-#         with tags.p():
-#             tags.strong('Straight-Ahead Jazz')
-#             tags.span(
-#                 """
-#                 is an extension of the bebop jazz subgenre, maintaining a strong focus on swing rhythms
-#                 and traditional harmonies. Example performers include Tommy Flanagan, Bill Evans, and
-#                 Kenny Barron.
-#                 """
-#             )
-#         with tags.p():
-#             tags.strong('Global Jazz')
-#             tags.span(
-#                 """
-#                 blends jazz with musical elements and rhythms from cultures around the world into a cross-cultural
-#                 fusion. Example performers include Abdullah Ibrahim, Tete Montoliu, and Chick Corea.
-#                 """
-#             )
