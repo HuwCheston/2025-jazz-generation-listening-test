@@ -39,6 +39,7 @@ class AudioPromptMultiple(AudioPrompt):
     external_template = "custom-prompt.html"
 
     def __init__(self,  *args, **kwargs):
+        self.definition = kwargs.pop("definition")
         self.all_audios = kwargs.pop("all_audio")
         super().__init__(*args, **kwargs)
 
@@ -51,3 +52,11 @@ class AudioPromptMultiple(AudioPrompt):
                 "test_b": self.all_audios["test_b"],
             }
         )
+
+    @property
+    def metadata(self):
+        return {
+            "text": str(self.text),
+            "url": self.url,
+            "play_window": self.play_window,
+        } | self.definition
