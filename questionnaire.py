@@ -1,7 +1,7 @@
 from dominate import tags
 
 from psynet.modular_page import ModularPage, TextControl
-from psynet.demography.general import YearsOfFormalTraining, HoursOfDailyMusicListening, MoneyFromPlayingMusic
+from psynet.demography.general import YearsOfFormalTraining, Age, Gender, CountryOfBirth, CountryOfResidence, HoursOfDailyMusicListening, MoneyFromPlayingMusic
 from psynet.page import InfoPage
 from psynet.timeline import join
 
@@ -104,6 +104,10 @@ def questionnaire() -> list:
 
     return join(
         introduction(),
+        Age(),
+        Gender(),
+        CountryOfBirth(),
+        CountryOfResidence(),
         YearsOfFormalTraining(),
         HoursOfDailyMusicListening(),
         MoneyFromPlayingMusic(),
