@@ -7,7 +7,10 @@
 #
 # dallinger@git+https://github.com/Dallinger/Dallinger.git@print-dashboard-url#egg=dallinger
 
-# psynet@git+https://gitlab.com/PsyNetDev/PsyNet.git@3f010eff35d7a6424486afbba9ba879b657b1dc0#egg=psynet
+# PsyNet master as of 28 May 2025
+psynet@git+https://gitlab.com/PsyNetDev/PsyNet.git@25cd591ee1c5b4436a265b5d3fb7c070cf60d9f0#egg=psynet
+dallinger==11.3.1
+
 # dallinger@git+https://github.com/Dallinger/Dallinger.git@e9d13734d179a5f1e0f0b9ddcc7da6292fd8ec98#egg=dallinger
-psynet==12.0.3
+# psynet==12.0.3
 # dallinger@git+https://github.com/Dallinger/Dallinger.git#egg=dallinger
