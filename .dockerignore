@@ -1,5 +1,6 @@
 assets/render
 assets/midi
+_deprecated
 
 # Standard place to put a virtual environment
 env/
