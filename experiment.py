@@ -73,7 +73,7 @@ logger = get_logger()
 
 seed_everything(seed=42)
 DEBUG__ = False
-TRIALS_PER_PARTICIPANT = 3 if DEBUG__ else 10
+TRIALS_PER_PARTICIPANT = 3 if DEBUG__ else 7
 
 VOLUME_CALIBRATION_AUDIO = 'assets/calibration/output.mp3'
 AUDIO_DIR = 'assets/render'
@@ -403,7 +403,7 @@ class Exp(psynet.experiment.Experiment):
             expected_trials_per_participant=TRIALS_PER_PARTICIPANT,
             max_trials_per_participant=TRIALS_PER_PARTICIPANT,
             recruit_mode='n_trials',
-            target_trials_per_node=10,
+            target_trials_per_node=7,
             allow_repeated_nodes=False,
             balance_across_nodes=True,
             check_performance_at_end=False,
