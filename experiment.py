@@ -9,7 +9,7 @@ from dominate import tags
 
 import psynet.experiment
 from psynet.asset import CachedAsset, LocalStorage
-from psynet.modular_page import AudioPrompt, RadioButtonControl, Prompt, SurveyJSControl
+from psynet.modular_page import SurveyJSControl
 from psynet.page import SuccessfulEndPage, ModularPage
 
 from psynet.timeline import Timeline, Event
@@ -33,160 +33,40 @@ except ImportError:
     from checks import experiment_requirements
 
 
+# We evaluate each model (Clamp and nCLaMP) using the following set of 3 conditions,
+# which use comparisons to anchor our similarity judgments against useful upper/lower bounds.
+
+# Condition 1:
+# Real anchor performance
+# Target 1: A generated performance from the same genre
+# Target 2: A real performance from the same genre
+# Tests us against an absolute upper bound of model performance
+
+# Condition 2:
+# Real anchor performance
+# Target 1: A generated performance from the same genre
+# Target 2: A real performance from a different genre
+# Tests us against some kind of lower bound of model performance
+
+# Condition 3:
+# Real anchor performance
+# Target 1: A generated performance from the same genre
+# Target 2: A generated performance from a different genre
+# Another lower bound of model performance
+
+# We also compare the two model types directly to each other as follows:
+
+# Condition 4:
+# Real anchor performance
+# Target 1: A generated performance from the same genre from Model 1 (ClaMP)
+# Target 2: A generated performance from the same genre from Model 2 (nCLaMP)
+# Tells us about how the models compare
+
+
 def seed_everything(seed: int = 42) -> None:
     """Sets all random seeds for reproducible results."""
     random.seed(seed)
     np.random.seed(seed)
-
-
-def check_lists_unique(*list_of_lists: list[str]):
-    """Accepts arbitrary lists of strings, checks that all are unique"""
-    sets = [set(lst) for lst in list_of_lists]
-    found_conflict = False
-    for i, current_set in enumerate(sets):
-        for j, other_set in enumerate(sets):
-            if i >= j:
-                continue
-            intersection = current_set & other_set
-            if intersection:
-                found_conflict = True
-    return not found_conflict
-
-
-def get_nodes():
-    nodes = []
-    real_paths = [i for i in os.listdir(AUDIO_DIR) if "real" in i]
-    if len(real_paths) == 0:
-        raise FileNotFoundError("Please make sure you have populated the render directory with the required audio files")
-    for anchor in real_paths:
-        anchor_path = os.path.join(AUDIO_DIR, anchor)
-        genre, anchor_id = anchor.split("_")[0], anchor.split("_")[-1].split(".")[0]
-        if genre not in GENRES:
-            continue
-        # Get generated paths
-        generates_same_genre_clamp = [i for i in os.listdir(AUDIO_DIR) if i.startswith(genre) and "gen_clamp" in i]
-        generates_same_genre_noclamp = [i for i in os.listdir(AUDIO_DIR) if i.startswith(genre) and "gen_noclamp" in i]
-        generates_diff_genre_clamp = [i for i in os.listdir(AUDIO_DIR) if not i.startswith(genre) and "gen_clamp" in i]
-        generates_diff_genre_noclamp = [i for i in os.listdir(AUDIO_DIR) if
-                                        not i.startswith(genre) and "gen_noclamp" in i]
-        # Get real paths
-        reals_same_genre = [
-            i for i in os.listdir(AUDIO_DIR)
-            if i.startswith(genre)
-               and "real_" in i
-               and i != anchor  # should not be the same as the anchor!
-               and i.split("_")[-1].split(".")[0] != anchor_id  # shouldn't have the same track ID
-        ]
-        reals_diff_genre = [
-            i for i in os.listdir(AUDIO_DIR)
-            if not i.startswith(genre)
-               and "real_" in i
-               and i.split("_")[-1].split(".")[0] != anchor_id  # shouldn't have the same track ID
-        ]
-        # Sanity check
-        assert check_lists_unique(
-            generates_same_genre_clamp, generates_same_genre_noclamp,
-            generates_diff_genre_clamp, generates_diff_genre_noclamp,
-            reals_diff_genre, reals_same_genre
-        )
-        assert anchor not in reals_same_genre
-        assert anchor not in reals_diff_genre
-
-        # We evaluate each model (Clamp and nCLaMP) using the following set of 3 conditions,
-        # which use comparisons to anchor our similarity judgments against useful upper/lower bounds.
-
-        # Condition 1:
-        # Real anchor performance
-        # Target 1: A generated performance from the same genre
-        # Target 2: A real performance from the same genre
-        # Tests us against an absolute upper bound of model performance
-
-        # Condition 2:
-        # Real anchor performance
-        # Target 1: A generated performance from the same genre
-        # Target 2: A real performance from a different genre
-        # Tests us against some kind of lower bound of model performance
-
-        # Condition 3:
-        # Real anchor performance
-        # Target 1: A generated performance from the same genre
-        # Target 2: A generated performance from a different genre
-        # Another lower bound of model performance
-
-        # We also compare the two model types directly to each other as follows:
-
-        # Condition 4:
-        # Real anchor performance
-        # Target 1: A generated performance from the same genre from Model 1 (ClaMP)
-        # Target 2: A generated performance from the same genre from Model 2 (nCLaMP)
-        # Tells us about how the models compare
-
-        # TEST 1: CLaMP/target | CLaMP/wrong
-        test_1 = (
-            random.choice(generates_same_genre_clamp), random.choice(generates_diff_genre_clamp)
-        )
-        # TEST 2: nCLaMP/target | nCLaMP/wrong
-        test_2 = (
-            random.choice(generates_same_genre_noclamp), random.choice(generates_diff_genre_noclamp)
-        )
-        # TEST 3: CLaMP/target | real/wrong
-        test_3 = (
-            random.choice(generates_same_genre_clamp), random.choice(reals_diff_genre)
-        )
-        # TEST 4: CLaMP/target | real/target
-        test_4 = (
-            random.choice(generates_same_genre_clamp), random.choice(reals_same_genre)
-        )
-        # TEST 5: nCLaMP/target | real/wrong
-        test_5 = (
-            random.choice(generates_same_genre_noclamp), random.choice(reals_diff_genre)
-        )
-        # TEST 6: nCLaMP/target | real/target
-        test_6 = (
-            random.choice(generates_same_genre_noclamp), random.choice(reals_same_genre)
-        )
-        # TEST 7: CLaMP/target | nCLaMP/target
-        test_7 = (
-            random.choice(generates_same_genre_clamp), random.choice(generates_same_genre_noclamp)
-        )
-        # Iterate over all tests and descriptions of them
-        for (test_a, test_b), description in zip(
-                [test_1, test_2, test_3, test_4, test_5, test_6, test_7],
-                TEST_DESCRIPTIONS
-        ):
-            # Get all file-paths correctly
-            test_a_path = os.path.join(AUDIO_DIR, test_a)
-            test_b_path = os.path.join(AUDIO_DIR, test_b)
-            # Check all paths exist on disk
-            assert os.path.isfile(test_a_path)
-            assert os.path.isfile(test_b_path)
-            assert os.path.isfile(anchor_path)
-            # Check all items are unique
-            assert test_a != test_b != anchor
-            # Create the current node
-            node = StaticNode(
-                definition={
-                    "genre": genre,
-                    "description": description,
-                    "anchor": anchor,
-                    "test_a": test_a,
-                    "test_b": test_b,
-                },
-                assets={
-                    "anchor": CachedAsset(
-                        input_path=anchor_path,
-                    ),
-                    "test_a": CachedAsset(
-                        input_path=test_a_path,
-                    ),
-                    "test_b": CachedAsset(
-                        input_path=test_b_path,
-                    )
-                }
-            )
-            nodes.append(node)
-    assert len(nodes) == len(real_paths) * len(TEST_DESCRIPTIONS)
-    return nodes
 
 
 logger = get_logger()
@@ -208,6 +88,100 @@ TEST_DESCRIPTIONS = [
     "CLaMP/target+nCLaMP/target",
 ]
 GENRES = ["avantgardejazz", "global", "straightaheadjazz", "traditionalearlyjazz"]
+
+
+def randomise_variables(var_tuple: tuple[str, str]):
+    """Randomly assign the first and second item in a tuple to two variables"""
+    #  This is how we shuffle the order of presentation
+    if random.choice([True, False]):
+        var_a, var_b = var_tuple
+    else:
+        var_b, var_a = var_tuple
+    return var_a, var_b
+
+
+def get_nodes(audio_dir: str = AUDIO_DIR) -> list[StaticNode]:
+    """Gets all PsyNet nodes for the experiment"""
+    nodes = []
+    anchor_paths = sorted([i for i in os.listdir(audio_dir) if "anchor" in i])
+    if len(anchor_paths) == 0:
+        raise FileNotFoundError("Please make sure you have populated the render directory with the audio files")
+    for anchor in anchor_paths:
+        # Join with the audio directory to get the complete filepath
+        anchor_path = os.path.join(audio_dir, anchor)
+        # Get the name of the genre and the MBZ ID of the track from the filepath
+        genre, anchor_id = anchor.split("_")[0], anchor.split("_")[-1].split(".")[0]
+        # Skip over incorrect genres
+        if genre not in GENRES:
+            continue
+        # Filepaths for generations can be obtained easily with string manipulation
+        getter_gen = lambda fp: "_".join(anchor.split("_")[:2]) + fp
+        clamp_target = getter_gen("_gen_match_clamp.mid.mp3")
+        noclamp_target = getter_gen("_gen_match_noclamp.mid.mp3")
+        clamp_wrong = getter_gen("_gen_nomatch_clamp.mid.mp3")
+        noclamp_wrong = getter_gen("_gen_nomatch_noclamp.mid.mp3")
+        # Filepaths for "real" tracks are a bit more complicated as they have IDs in them
+        getter_real = lambda fp: sorted([
+            i for i in os.listdir(audio_dir) if "_".join(anchor.split("_")[:2]) + fp in i
+        ])[0]
+        real_target = getter_real("_real_match_")
+        real_wrong = getter_real("_real_nomatch_")
+        # Sanity check that the MBZ IDs for the real tracks are different to the anchor track
+        for real in [real_target, real_wrong]:
+            real_id = real.split("_")[-1].split(".")[0]
+            assert real_id != anchor_id
+        # Create the tests as tuples of filepaths
+        # TEST 1: CLaMP/target | CLaMP/wrong
+        test_1 = (clamp_target, clamp_wrong)
+        # TEST 2: nCLaMP/target | nCLaMP/wrong
+        test_2 = (noclamp_target, noclamp_wrong)
+        # TEST 3: CLaMP/target | real/wrong
+        test_3 = (clamp_target, real_wrong)
+        # TEST 4: CLaMP/target | real/target
+        test_4 = (clamp_target, real_target)
+        # TEST 5: nCLaMP/target | real/wrong
+        test_5 = (noclamp_target, real_wrong)
+        # TEST 6: nCLaMP/target | real/target
+        test_6 = (noclamp_target, real_target)
+        # TEST 7: CLaMP/target | nCLaMP/target
+        test_7 = (clamp_target, noclamp_target)
+        all_tests = [test_1, test_2, test_3, test_4, test_5, test_6, test_7]
+        # Iterate over all the tests and the corresponding description
+        for track_tuple, description in zip(all_tests, TEST_DESCRIPTIONS):
+            # 50% chance that A is the first item in the tuple, 50% that it is the second
+            track_a, track_b = randomise_variables(track_tuple)
+            # Convert to paths
+            track_a_path = os.path.join(audio_dir, track_a)
+            track_b_path = os.path.join(audio_dir, track_b)
+            # Sanity check all paths exist on disk
+            for t_path in [track_a_path, track_b_path, anchor_path]:
+                assert os.path.isfile(t_path)
+            # Sanity check all items are unique
+            assert track_a_path != track_b_path != anchor_path
+            # Create the current node
+            node = StaticNode(
+                definition={
+                    "genre": genre,
+                    "description": description,
+                    "anchor": anchor,
+                    "test_a": track_a,
+                    "test_b": track_b,
+                },
+                assets={
+                    "anchor": CachedAsset(
+                        input_path=anchor_path,
+                    ),
+                    "test_a": CachedAsset(
+                        input_path=track_a_path,
+                    ),
+                    "test_b": CachedAsset(
+                        input_path=track_b_path,
+                    )
+                }
+            )
+            nodes.append(node)
+    assert len(nodes) == len(anchor_paths) * len(TEST_DESCRIPTIONS)
+    return nodes
 
 
 class RateTrial(StaticTrial):
