@@ -35,6 +35,25 @@ def introduction(
     return InfoPage(html, time_estimate=time_estimate)
 
 
+def recognise_assessment(
+        time_estimate: float = 10
+) -> ModularPage:
+    """
+
+    :param time_estimate:
+    :return:
+    """
+
+    return ModularPage(
+        "recognise_feedback",
+        "Did you recognise any of the performances you listened to?",
+        TextControl(one_line=False),
+        bot_response="I am just a bot, I don't understand jazz",
+        save_answer="recognise_feedback",
+        time_estimate=time_estimate,
+    )
+
+
 def similarity_assessment(
         time_estimate: float = 10
 ) -> ModularPage:
@@ -111,6 +130,7 @@ def questionnaire() -> list:
         YearsOfFormalTraining(),
         HoursOfDailyMusicListening(),
         MoneyFromPlayingMusic(),
+        recognise_assessment(),
         similarity_assessment(),
         feedback(),
         prize_draw_email(),
