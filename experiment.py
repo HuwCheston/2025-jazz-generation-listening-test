@@ -92,6 +92,35 @@ def get_nodes():
         assert anchor not in reals_same_genre
         assert anchor not in reals_diff_genre
 
+        # We evaluate each model (Clamp and nCLaMP) using the following set of 3 conditions,
+        # which use comparisons to anchor our similarity judgments against useful upper/lower bounds.
+
+        # Condition 1:
+        # Real anchor performance
+        # Target 1: A generated performance from the same genre
+        # Target 2: A real performance from the same genre
+        # Tests us against an absolute upper bound of model performance
+
+        # Condition 2:
+        # Real anchor performance
+        # Target 1: A generated performance from the same genre
+        # Target 2: A real performance from a different genre
+        # Tests us against some kind of lower bound of model performance
+
+        # Condition 3:
+        # Real anchor performance
+        # Target 1: A generated performance from the same genre
+        # Target 2: A generated performance from a different genre
+        # Another lower bound of model performance
+
+        # We also compare the two model types directly to each other as follows:
+
+        # Condition 4:
+        # Real anchor performance
+        # Target 1: A generated performance from the same genre from Model 1 (ClaMP)
+        # Target 2: A generated performance from the same genre from Model 2 (nCLaMP)
+        # Tells us about how the models compare
+
         # TEST 1: CLaMP/target | CLaMP/wrong
         test_1 = (
             random.choice(generates_same_genre_clamp), random.choice(generates_diff_genre_clamp)
