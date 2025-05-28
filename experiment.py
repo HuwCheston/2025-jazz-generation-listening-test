@@ -73,7 +73,7 @@ logger = get_logger()
 
 seed_everything(seed=42)
 DEBUG__ = False
-TRIALS_PER_PARTICIPANT = 3 if DEBUG__ else 8
+TRIALS_PER_PARTICIPANT = 3 if DEBUG__ else 10
 
 VOLUME_CALIBRATION_AUDIO = 'assets/calibration/output.mp3'
 AUDIO_DIR = 'assets/render'
@@ -229,11 +229,11 @@ class RateTrial(StaticTrial):
                           "commentPlaceholder": "Optional",
                           "columns": [
                             {
-                              "value": "perf_a",
+                              "value": "test_a",
                               "text": "Performance A"
                             },
                             {
-                              "value": "perf_b",
+                              "value": "test_b",
                               "text": "Performance B"
                             },
                             {
@@ -278,11 +278,11 @@ class RateTrial(StaticTrial):
                           ],
                           "rows": [
                             {
-                              "value": "perf_a",
+                              "value": "test_a",
                               "text": "Performance A"
                             },
                             {
-                              "value": "perf_b",
+                              "value": "test_b",
                               "text": "Performance B"
                             }
                           ]
@@ -317,11 +317,11 @@ class RateTrial(StaticTrial):
                           ],
                           "rows": [
                             {
-                              "value": "perf_a",
+                              "value": "test_a",
                               "text": "Performance A"
                             },
                             {
-                              "value": "perf_b",
+                              "value": "test_b",
                               "text": "Performance B"
                             }
                           ]
@@ -356,11 +356,11 @@ class RateTrial(StaticTrial):
                           ],
                           "rows": [
                             {
-                              "value": "perf_a",
+                              "value": "test_a",
                               "text": "Performance A"
                             },
                             {
-                              "value": "perf_b",
+                              "value": "test_b",
                               "text": "Performance B"
                             }
                           ]
