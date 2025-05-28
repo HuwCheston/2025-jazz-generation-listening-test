@@ -4,4 +4,4 @@ SKIP_VERSION_CHECK=1 psynet debug ssh --app psynet-09 --dns-host musix.mus.cam.a
 
 
 # Destroy command
-SKIP_VERSION_CHECK=1 psynet destroy ssh --app psynet-09 --server musix.mus.cam.ac.uk
+SKIP_VERSION_CHECK=1 psynet destroy ssh psynet-09 --server musix.mus.cam.ac.uk
