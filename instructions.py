@@ -58,6 +58,11 @@ def instructions():
                 )
                 tags.li(
                     """
+                    Some performances may start and end abruptly. This is normal and you should not let it affect your ratings.
+                    """
+                )
+                tags.li(
+                    """
                     When rating a performance, try to focus on the quality of the musical composition and not on the 
                     quality of the virtual instruments or the music production mix.
                     """
