@@ -2,9 +2,10 @@
 title = Music listening experiment (headphones required, Chrome browser, 15 minutes)
 description = This is a music listening experiment, but no musical expertise is required to take part. You will listen to different musical performances, and you will be asked to rate them. We use a dynamic payment scheme which means you get paid in proportion to how far you make it through the experiment.
 contact_email_on_error = hwc31@cam.ac.uk
+show_reward = false
 
 [Prolific]
-recruiter = hotair
+recruiter = generic
 base_payment = 0
 prolific_estimated_completion_minutes = 1
 
