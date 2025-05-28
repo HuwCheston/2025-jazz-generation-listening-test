@@ -56,6 +56,8 @@ def check_lists_unique(*list_of_lists: list[str]):
 def get_nodes():
     nodes = []
     real_paths = [i for i in os.listdir(AUDIO_DIR) if "real" in i]
+    if len(real_paths) == 0:
+        raise FileNotFoundError("Please make sure you have populated the render directory with the required audio files")
     for anchor in real_paths:
         anchor_path = os.path.join(AUDIO_DIR, anchor)
         genre, anchor_id = anchor.split("_")[0], anchor.split("_")[-1].split(".")[0]
@@ -177,7 +179,6 @@ TEST_DESCRIPTIONS = [
     "CLaMP/target+nCLaMP/target",
 ]
 GENRES = ["avantgardejazz", "global", "straightaheadjazz", "traditionalearlyjazz"]
-NODES = get_nodes()
 
 
 class RateTrial(StaticTrial):
@@ -395,7 +396,7 @@ class Exp(psynet.experiment.Experiment):
         RateTrialMaker(
             id_="main_experiment",
             trial_class=RateTrial,
-            nodes=NODES,
+            nodes=get_nodes,
             expected_trials_per_participant=TRIALS_PER_PARTICIPANT,
             max_trials_per_participant=TRIALS_PER_PARTICIPANT,
             recruit_mode='n_trials',
