@@ -1,6 +1,4 @@
-# Jazz style conditioned generation: listening test
-
-Subjective listening test for outputs from a transformer model conditioned on jazz music.
+# README
 
 This experiment is implemented using the [PsyNet framework](https://www.psynet.dev/).
 
