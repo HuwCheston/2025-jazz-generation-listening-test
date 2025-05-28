@@ -1,3 +1,7 @@
 # Note that we use debug, not deploy, because of a dallinger feature (bug?) where the generic recruiter
 # prevents people from taking the experiment twice from the same web browser if on 'deploy' mode
 SKIP_VERSION_CHECK=1 psynet debug ssh --app psynet-09 --dns-host musix.mus.cam.ac.uk --server musix.mus.cam.ac.uk
+
+
+# Destroy command
+SKIP_VERSION_CHECK=1 psynet destroy ssh --app psynet-09 --server musix.mus.cam.ac.uk
