@@ -64,6 +64,7 @@ def get_nodes(audio_dir: str = AUDIO_DIR) -> list[StaticNode]:
         metadata_path = os.path.join(METADATA_DIR, "_".join([genre, num, condition]) + ".json")
         with open(metadata_path, "r") as f:
             metadata_read = json.load(f)
+        metadata_read["track_fpath"] = render
         # Construct the node
         node = StaticNode(
             definition={"genre": genre, "num": int(num), "condition": condition, "metadata": metadata_read},

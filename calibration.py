@@ -69,5 +69,5 @@ class AudioPromptCustom(AudioPrompt):
 
     @property
     def metadata(self):
-        meta = {k: self.definition["metadata"][k] for k in ["condition_token", "similarity", "condition_type"]}
+        meta = {k: self.definition["metadata"][k] for k in ["condition_token", "similarity", "condition_type", "track_fpath"]}
         return {"text": str(self.text), "url": self.url, "play_window": self.play_window} | meta
