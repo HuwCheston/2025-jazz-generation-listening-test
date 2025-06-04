@@ -13,24 +13,46 @@ def instructions():
             tags.strong('Description:')
             tags.span(
                 """
-                In this experiment, you will listen to multiple piano performances.
+                In this experiment, you will listen to different styles of jazz played on the piano.
                 
-                You will hear an initial performance 
+                Some are real performances, and others are generated with artificial intelligence.
                 """
             )
-            tags.strong("(the anchor), ")
-            tags.span("and then two subsequent performances")
-            tags.strong("(A and B).")
 
         with tags.p():
             tags.strong("Task:")
             tags.span(
                 """
-                You will be asked several questions about the performances.
-                For instance, you might be asked to indicate which of A or B sounded more like the anchor.
-                You may also be asked to indicate which of A or B you enjoyed more.
+                You will be asked several questions about each performance.
+                For instance, you might be asked to rate how creative or diverse the performance was, or to 
+                suggest a potential style of jazz for the performance.
                 """
             )
+
+        with tags.p():
+            tags.strong("Genres:")
+            tags.span(
+                """
+                You will hear three different styles of jazz during the experiment.
+                """
+            )
+            with tags.ul():
+                tags.li(
+                    """
+                    Avant-Garde: this might include performances by pianists like Paul Bley and Geri Allen
+                    """
+                )
+                tags.li(
+                    """
+                    Mainstream or "Straight-Ahead": this might include performances by pianists like Oscar Peterson and Bill Evans
+                    """
+                )
+                tags.li(
+                    """
+                    Traditional & Early: this might include performances by pianists like Art Tatum and Teddy Wilson
+                    """
+                )
+
 
         with tags.p():
             tags.strong('Advice:')
@@ -65,13 +87,6 @@ def instructions():
                     """
                     When rating a performance, try to focus on the quality of the musical composition and not on the 
                     quality of the virtual instruments or the music production mix.
-                    """
-                )
-                tags.li(
-                    """
-                    When you cannot perceive any differences between the two performances, you can indicate "No Preference".
-                    However, we encourage you to try and take a stand and choose one of the two performances wherever 
-                    possible.
                     """
                 )
 

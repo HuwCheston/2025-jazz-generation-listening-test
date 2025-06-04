@@ -1,6 +1,6 @@
 from dominate import tags
 
-from psynet.modular_page import ModularPage, TextControl
+from psynet.modular_page import ModularPage, TextControl, RadioButtonControl
 from psynet.demography.general import YearsOfFormalTraining, Age, Gender, CountryOfBirth, CountryOfResidence, HoursOfDailyMusicListening, MoneyFromPlayingMusic
 from psynet.page import InfoPage
 from psynet.timeline import join
@@ -34,6 +34,35 @@ def introduction(
         )
     return InfoPage(html, time_estimate=time_estimate)
 
+def jazz_experience(
+        time_estimate: float = 10
+) -> ModularPage:
+    """
+
+    :param time_estimate:
+    :return:
+    """
+    return ModularPage(
+        "jazz_experience",
+        prompt="How often do you listen to or perform jazz?",
+        control=RadioButtonControl(
+            [
+                "frequently",
+                "sometimes",
+                "never",
+            ],
+            [
+                "Frequently",
+                "Sometimes",
+                "Never",
+            ],
+            name="jazz_experience_control",
+        ),
+        bot_response="I am just a bot, I don't understand jazz",
+        save_answer="jazz_experience",
+        time_estimate=time_estimate,
+    )
+
 
 def recognise_assessment(
         time_estimate: float = 10
@@ -65,7 +94,7 @@ def similarity_assessment(
 
     return ModularPage(
         "similarity_feedback",
-        "When choosing the performance that sounded more like the anchor, what did you listen for?",
+        "When selecting the genre that best matched the performance, what did you listen for?",
         TextControl(one_line=False),
         bot_response="I am just a bot, I can't listen.",
         save_answer="similarity_feedback",
@@ -130,6 +159,7 @@ def questionnaire() -> list:
         YearsOfFormalTraining(),
         HoursOfDailyMusicListening(),
         MoneyFromPlayingMusic(),
+        jazz_experience(),
         recognise_assessment(),
         similarity_assessment(),
         feedback(),

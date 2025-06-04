@@ -60,3 +60,14 @@ class AudioPromptMultiple(AudioPrompt):
             "url": self.url,
             "play_window": self.play_window,
         } | self.definition
+
+
+class AudioPromptCustom(AudioPrompt):
+    def __init__(self,  *args, **kwargs):
+        self.definition = kwargs.pop("definition")
+        super().__init__(*args, **kwargs)
+
+    @property
+    def metadata(self):
+        meta = {k: self.definition["metadata"][k] for k in ["condition_token", "similarity", "condition_type"]}
+        return {"text": str(self.text), "url": self.url, "play_window": self.play_window} | meta
