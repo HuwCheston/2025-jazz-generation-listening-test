@@ -99,9 +99,8 @@ with information_sheet:
             """
             The project has been approved by the University of Cambridge Faculty of Music Ethics Committee.
             
-            We are conscious of the ethical issues that are raised by training machines to generate music. Our models 
-            are trained on open-source data. This means that anybody can access the music we used to train the model.
-            Our models are also released under non-commercial licenses. This means that other people will not be able 
+            We are conscious of the ethical issues that are raised by training machines to generate music. 
+            Our models are released under non-commercial licenses. This means that other people will not be able 
             to profit by using our model to create their own music to sell, nor will they be able to sell any of the 
             music we have generated using these models. Ultimately, 
             """
